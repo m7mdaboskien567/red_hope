@@ -1,0 +1,62 @@
+
+.loading-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999999;
+  width: 100%;
+  height: 100%;
+  direction: ltr;
+  background: var(--color-dark);
+  background-size: 600px;
+  text-align: center;
+  height: 100vh;
+}
+
+.loading-page-content {
+  position: absolute;
+  margin: auto;
+  width: 100vw;
+  height: 300px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.loader-logo-wr {
+  width: 250px;
+  height: 250px;
+  position: relative;
+}
+
+.load-progress {
+  width: 0px;
+  height: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: ease 1.5s;
+  background: var(--bg-gradient-primary);
+}
+
+.logo {
+  width: 250px;
+  height: 250px;
+  background: url(../../imgs/favicon.png) bottom center no-repeat;
+  background-size: cover !important;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.logo-gray {
+  filter: grayscale(1);
+  opacity: 0.3;
+}
+
+.logo-color {
+  z-index: 3 !important;
+  height: 0;
+  transition: ease 1.5s;
+}

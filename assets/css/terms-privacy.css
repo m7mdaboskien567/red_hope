@@ -1,0 +1,108 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+/* Base */
+body {
+    background: linear-gradient(180deg, #fdecec 0%, #f9fafb 100%);
+    color: #2c2c2c;
+    line-height: 1.8;
+}
+
+/* Main container */
+.container {
+    max-width: 900px;
+    margin: 70px auto;
+    background: #ffffff;
+    padding: 45px 55px;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(198, 40, 40, 0.15);
+    border-top: 6px solid #c62828;
+}
+
+/* Main title */
+h1 {
+    color: #c62828;
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+/* Updated date */
+.updated {
+    font-size: 14px;
+    color: #8e0000;
+    margin-bottom: 30px;
+}
+
+/* Section titles */
+h2 {
+    margin-top: 35px;
+    margin-bottom: 12px;
+    font-size: 22px;
+    color: #8e0000;
+    position: relative;
+    padding-left: 14px;
+}
+
+h2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 6px;
+    height: 70%;
+    background-color: #c62828;
+    border-radius: 4px;
+}
+
+/* Text */
+p {
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+/* Lists */
+ul {
+    margin: 12px 0 22px 25px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* Links */
+a {
+    color: #c62828;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #8e0000;
+    text-decoration: underline;
+}
+
+/* Highlight boxes (optional use later) */
+.notice {
+    background: #fdecec;
+    border-left: 5px solid #c62828;
+    padding: 15px 18px;
+    border-radius: 8px;
+    margin: 25px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        margin: 35px 15px;
+        padding: 30px 22px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+}
