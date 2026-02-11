@@ -64,11 +64,13 @@ try {
     $stmt->execute([$donor_profile['donor_id'] ?? 0]);
     $my_appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 6. Get Donation History (All)
+    // 6. Get Donation History (All - Centers or Hospitals)
     $stmt = $pdo->prepare("
-        SELECT d.*, c.name as center_name 
+        SELECT d.*, 
+               COALESCE(c.name, h.name) as location_name 
         FROM donations d 
-        JOIN blood_centers c ON d.center_id = c.center_id 
+        LEFT JOIN blood_centers c ON d.center_id = c.center_id 
+        LEFT JOIN hospitals h ON d.hospital_id = h.hospital_id
         WHERE d.donor_id = ? 
         ORDER BY d.donated_at DESC
     ");
@@ -287,9 +289,7 @@ try {
                                                 Accept Request
                                             </button>
                                         <?php elseif ($req['status'] === 'In Progress'): ?>
-                                            <button class="btn btn-success btn-sm" onclick="completeBloodRequest(<?php echo $req['request_id']; ?>)" style="font-size: 0.75rem; padding: 5px 15px;">
-                                                Mark as Fulfilled
-                                            </button>
+                                            <span class="text-muted small italic">Donor is on the way</span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -385,7 +385,15 @@ try {
                 <!-- History Section -->
                 <div id="history-section" class="dashboard-section" style="display: none;">
                     <div class="content-wrapper">
-                        <h2>Donation History</h2>
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                            <h2 class="mb-0">Donation History</h2>
+                            <div class="filter-wrapper" style="max-width: 300px; width: 100%;">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="donationsSearch" class="form-control border-start-0" placeholder="Filter by location or status...">
+                                </div>
+                            </div>
+                        </div>
                         <div class="donations-table-wrapper">
                             <table class="donations-table">
                                 <thead>
@@ -399,11 +407,12 @@ try {
                                 <tbody>
                                     <?php if (!empty($donation_history)): ?>
                                         <?php foreach ($donation_history as $donation): ?>
+                                        <tr>
                                             <td class="date-cell">
                                                 <span class="date"><?php echo date('M d, Y', strtotime($donation['donated_at'])); ?></span>
                                             </td>
                                             <td class="center-cell">
-                                                <span class="name"><?php echo htmlspecialchars($donation['center_name']); ?></span>
+                                                <span class="name"><?php echo htmlspecialchars($donation['location_name'] ?? 'General Donation'); ?></span>
                                             </td>
                                             <td><?php echo $donation['volume_ml']; ?> ml</td>
                                             <td>

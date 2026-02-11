@@ -34,7 +34,6 @@ $user_role = $_SESSION['role'] ?? '';
         <?php else: ?>
             <?php if ($user_role === 'Donor'): ?>
                 <li onclick="location.href='/redhope/dashboard/donator/'">Dashboard</li>
-<<<<<<< HEAD
                 <li onclick="location.href='/redhope/dashboard/donator/?tab=donate'">Donate</li>
                 <li onclick="location.href='/redhope/dashboard/donator/?tab=requests'">Requests</li>
                 <li onclick="location.href='/redhope/dashboard/donator/?tab=appointments'">Appointments</li>
@@ -43,25 +42,11 @@ $user_role = $_SESSION['role'] ?? '';
                 <li onclick="location.href='/redhope/dashboard/hospital_admin/'">Dashboard</li>
                 <li onclick="location.href='/redhope/dashboard/hospital_admin/?tab=requests'">Requests</li>
                 <li onclick="location.href='/redhope/dashboard/hospital_admin/?tab=inventory'">Inventory</li>
-<?php elseif ($user_role === 'Super Admin'): ?>
+            <?php elseif ($user_role === 'Super Admin'): ?>
                 <li onclick="location.href='/redhope/admin/'">Dashboard</li>
                 <li onclick="location.href='/redhope/admin/?tab=users'">Users</li>
                 <li onclick="location.href='/redhope/admin/?tab=hospitals'">Hospitals</li>
                 <li onclick="location.href='/redhope/admin/?tab=centers'">Centers</li>
-=======
-                <li onclick="location.href='/redhope/dashboard/donator/donate.php'">Donate</li>
-                <li onclick="location.href='/redhope/dashboard/donator/history.php'">History</li>
-            <?php elseif ($user_role === 'Hospital Admin'): ?>
-                <li onclick="location.href='/redhope/dashboard/hospital_admin/'">Dashboard</li>
-                <li onclick="location.href='/redhope/dashboard/hospital_admin/requests.php'">Requests</li>
-                <li onclick="location.href='/redhope/dashboard/hospital_admin/history.php'">History</li>
-            <?php elseif ($user_role === 'Super Admin'): ?>
-                <li onclick="location.href='/redhope/admin/'">Dashboard</li>
-                <li onclick="location.href='/redhope/admin/users.php'">Users</li>
-                <li onclick="location.href='/redhope/admin/hospitals.php'">Hospitals</li>
-                <li onclick="location.href='/redhope/admin/requests.php'">Requests</li>
-                <li onclick="location.href='/redhope/admin/messages.php'">Messages</li>
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
             <?php endif; ?>
             <li onclick="location.href='/redhope/apis/logout.php'">Logout</li>
         <?php endif; ?>

@@ -35,11 +35,13 @@ try {
 
     $hospital_id = $hospital['hospital_id'];
 
-    // 3. Fetch Blood Requests & Stats
+    // 3. Fetch Blood Requests & Stats (Include Donor Names if Progressing)
     $stmt = $pdo->prepare("
-        SELECT * FROM blood_requests 
-        WHERE hospital_id = ? 
-        ORDER BY created_at DESC
+        SELECT br.*, u.first_name as donor_first, u.last_name as donor_last, u.phone as donor_phone
+        FROM blood_requests br
+        LEFT JOIN users u ON br.donor_id = u.user_id
+        WHERE br.hospital_id = ? 
+        ORDER BY br.created_at DESC
     ");
     $stmt->execute([$hospital_id]);
     $all_hospital_requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -176,9 +178,9 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </span>
                 </div>
                 <div>
-                    <span onclick="loadSection('inventory')">
-                        <i class="bi bi-box-seam"></i>
-                        <p>Inventory</p>
+                    <span onclick="loadSection('donations-history')">
+                        <i class="bi bi-clock-history"></i>
+                        <p>History</p>
                     </span>
                 </div>
                 <div>
@@ -239,19 +241,29 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         <div class="activity-list">
                             <?php if (!empty($all_hospital_requests)): ?>
                                 <?php foreach ($all_hospital_requests as $req): ?>
-                                <div class="activity-item">
+                                <div class="activity-item d-flex align-items-center">
                                     <div class="activity-icon"><i class="bi bi-droplet-fill text-danger"></i></div>
-                                    <div class="activity-details">
+                                    <div class="activity-details flex-grow-1">
                                         <h4><?php echo $req['blood_type_required']; ?> for Patient: <?php echo htmlspecialchars($req['patient_identifier'] ?? 'N/A'); ?></h4>
                                         <p><?php echo $req['units_requested']; ?> units • <?php echo date('M d, Y', strtotime($req['created_at'])); ?></p>
+                                        <?php if ($req['donor_id']): ?>
+                                            <p class="small text-muted"><i class="bi bi-person-fill"></i> Accepted by: <?php echo htmlspecialchars($req['donor_first'] . ' ' . $req['donor_last']); ?> (<?php echo htmlspecialchars($req['donor_phone']); ?>)</p>
+                                        <?php endif; ?>
                                     </div>
-                                    <div class="activity-status <?php echo strtolower($req['urgency_level']); ?>">
-                                        <?php echo $req['urgency_level']; ?>
-                                    </div>
-                                    <div style="margin-left: 15px;">
-                                         <span class="status-badge <?php echo strtolower(str_replace(' ', '-', $req['status'])); ?>">
-                                            <?php echo $req['status']; ?>
-                                        </span>
+                                    <div class="activity-status-wrapper d-flex flex-column align-items-end gap-2">
+                                        <div class="activity-status <?php echo strtolower($req['urgency_level']); ?>">
+                                            <?php echo $req['urgency_level']; ?>
+                                        </div>
+                                        <div>
+                                            <span class="status-badge <?php echo strtolower(str_replace(' ', '-', $req['status'])); ?>">
+                                                <?php echo $req['status']; ?>
+                                            </span>
+                                        </div>
+                                        <?php if ($req['status'] === 'In Progress'): ?>
+                                            <button class="btn btn-success btn-sm mt-1" onclick="fulfillBloodRequest(<?php echo $req['request_id']; ?>)" style="font-size: 0.75rem;">
+                                                Mark as Fulfilled
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
@@ -262,32 +274,39 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
 
-                <!-- Inventory Section -->
-                <div id="inventory-section" class="dashboard-section" style="display: none;">
+                <!-- Donations History Section -->
+                <div id="donations-history-section" class="dashboard-section" style="display: none;">
                     <div class="content-wrapper">
-                        <h2>Live Blood Inventory Status</h2>
+                        <h2>Fulfilled Donations History</h2>
                         <div class="donations-table-wrapper">
                             <table class="donations-table">
                                 <thead>
                                     <tr>
+                                        <th>Date</th>
                                         <th>Blood Type</th>
-                                        <th>Location</th>
-                                        <th>Expiry</th>
+                                        <th>Donor</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="inventoryTableBody">
-                                    <?php if (!empty($inventory)): ?>
-                                        <?php foreach ($inventory as $item): ?>
-                                        <tr data-blood-type="<?php echo $item['blood_type']; ?>">
-                                            <td><strong><?php echo $item['blood_type']; ?></strong></td>
-                                            <td><?php echo htmlspecialchars($item['center_name']); ?></td>
-                                            <td><?php echo date('M d, Y', strtotime($item['expiry_date'])); ?></td>
-                                            <td><span class="status-badge eligible">Available</span></td>
+                                <tbody>
+                                    <?php 
+                                    $has_fulfilled = false;
+                                    foreach ($all_hospital_requests as $req): 
+                                        if ($req['status'] === 'Fulfilled'): 
+                                            $has_fulfilled = true;
+                                    ?>
+                                        <tr>
+                                            <td><?php echo date('M d, Y', strtotime($req['created_at'])); ?></td>
+                                            <td><strong><?php echo $req['blood_type_required']; ?></strong></td>
+                                            <td><?php echo htmlspecialchars(($req['donor_first'] ?? '') . ' ' . ($req['donor_last'] ?? '')); ?></td>
+                                            <td><span class="status-badge eligible">Fulfilled</span></td>
                                         </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr><td colspan="4" style="text-align: center; padding: 20px;">No inventory found.</td></tr>
+                                    <?php 
+                                        endif;
+                                    endforeach; 
+                                    if (!$has_fulfilled):
+                                    ?>
+                                        <tr><td colspan="4" style="text-align: center; padding: 20px;">No fulfilled donations yet.</td></tr>
                                     <?php endif; ?>
                                 </tbody>
                             </table>

@@ -17,23 +17,16 @@ CREATE TABLE users (
 -- 2. Hospitals Table
 CREATE TABLE hospitals (
     hospital_id INT AUTO_INCREMENT PRIMARY KEY,
-<<<<<<< HEAD
     admin_id INT NULL,
-=======
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
     name VARCHAR(255) NOT NULL,
     address TEXT NOT NULL,
     city VARCHAR(100) NOT NULL,
     contact_number VARCHAR(30),
     email VARCHAR(255) UNIQUE,
     is_verified BOOLEAN DEFAULT FALSE,
-<<<<<<< HEAD
     created_at DATETIME NOT NULL,
     CONSTRAINT fk_hospital_admin FOREIGN KEY (admin_id) REFERENCES users(user_id) ON DELETE
     SET NULL
-=======
-    created_at DATETIME NOT NULL
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
 ) ENGINE = InnoDB;
 -- 3. Donor Profiles
 CREATE TABLE donor_profiles (
@@ -52,7 +45,7 @@ CREATE TABLE donor_profiles (
         'O+',
         'O-'
     ) NOT NULL,
-    weight_kg DECIMAL(3, 2) NOT NULL,
+    weight_kg DECIMAL(5, 2) NOT NULL,
     is_anonymous BOOLEAN DEFAULT FALSE,
     last_donation_date DATE NULL,
     medical_conditions TEXT NULL,
@@ -78,11 +71,8 @@ CREATE TABLE appointments (
         'In Progress',
         'Completed',
         'Cancelled',
-<<<<<<< HEAD
+        'No-show',
         'Allowed'
-=======
-        'No-show'
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
     ) DEFAULT 'Pending',
     notes TEXT NULL,
     CONSTRAINT fk_appointment_donor FOREIGN KEY (donor_id) REFERENCES donor_profiles(donor_id) ON DELETE CASCADE,
@@ -92,7 +82,8 @@ CREATE TABLE appointments (
 CREATE TABLE donations (
     donation_id INT AUTO_INCREMENT PRIMARY KEY,
     donor_id INT NOT NULL,
-    center_id INT NOT NULL,
+    center_id INT NULL,
+    hospital_id INT NULL,
     volume_ml INT NOT NULL,
     hemoglobin_level DECIMAL(4, 2) NOT NULL,
     temperature DECIMAL(4, 2) NULL,
@@ -105,7 +96,10 @@ CREATE TABLE donations (
     ) DEFAULT 'Pending Lab',
     donated_at DATETIME NOT NULL,
     CONSTRAINT fk_donation_donor FOREIGN KEY (donor_id) REFERENCES donor_profiles(donor_id) ON DELETE CASCADE,
-    CONSTRAINT fk_donation_center FOREIGN KEY (center_id) REFERENCES blood_centers(center_id) ON DELETE CASCADE
+    CONSTRAINT fk_donation_center FOREIGN KEY (center_id) REFERENCES blood_centers(center_id) ON DELETE
+    SET NULL,
+        CONSTRAINT fk_donation_hospital FOREIGN KEY (hospital_id) REFERENCES hospitals(hospital_id) ON DELETE
+    SET NULL
 ) ENGINE = InnoDB;
 -- 7. Blood Inventory
 CREATE TABLE blood_inventory (
@@ -165,16 +159,11 @@ CREATE TABLE blood_requests (
         'Expired',
         'Cancelled'
     ) DEFAULT 'Open',
-<<<<<<< HEAD
     donor_id INT NULL,
     created_at DATETIME NOT NULL,
     CONSTRAINT fk_request_hospital FOREIGN KEY (hospital_id) REFERENCES hospitals(hospital_id) ON DELETE CASCADE,
     CONSTRAINT fk_request_donor FOREIGN KEY (donor_id) REFERENCES donor_profiles(donor_id) ON DELETE
     SET NULL
-=======
-    created_at DATETIME NOT NULL,
-    CONSTRAINT fk_request_hospital FOREIGN KEY (hospital_id) REFERENCES hospitals(hospital_id) ON DELETE CASCADE
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
 ) ENGINE = InnoDB;
 -- 9. Messages
 CREATE TABLE messages (
@@ -187,8 +176,8 @@ CREATE TABLE messages (
     CONSTRAINT fk_msg_sender FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
     CONSTRAINT fk_msg_receiver FOREIGN KEY (receiver_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
+-- Sample Data
 INSERT INTO users (
-<<<<<<< HEAD
         first_name,
         last_name,
         email,
@@ -197,7 +186,6 @@ INSERT INTO users (
         role,
         gender,
         date_of_birth,
-        last_login,
         created_at
     )
 VALUES (
@@ -206,35 +194,8 @@ VALUES (
         'admin@redhope.com',
         '+20123456789',
         '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-        -- password: 12345678
         'Super Admin',
         'Male',
         '1990-01-01',
-        NOW(),
         NOW()
     );
-=======
-    first_name,
-    last_name,
-    email,
-    phone,
-    password_hash,
-    role,
-    gender,
-    date_of_birth,
-    last_login,
-    created_at
-)
-VALUES (
-    'Super',
-    'Admin',
-    'admin@redhope.com',
-    '+20123456789',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: 12345678
-    'Super Admin',
-    'Male',
-    '1990-01-01',
-    NOW(),
-    NOW()
-);
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
