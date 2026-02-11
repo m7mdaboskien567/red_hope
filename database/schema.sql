@@ -192,9 +192,55 @@ VALUES (
         'Super',
         'Admin',
         'admin@redhope.com',
-        '+20123456789',
+        "123456789",
         '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
         'Super Admin',
+        'Male',
+        '1990-01-01',
+        NOW()
+    );
+
+    INSERT INTO users (
+        first_name,
+        last_name,
+        email,
+        phone,
+        password_hash,
+        role,
+        gender,
+        date_of_birth,
+        created_at
+    )
+VALUES (
+        'Donor',
+        'User',
+        'donor@redhope.com',
+        "1223456789",
+        '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        'Donor',
+        'Male',
+        '1990-01-01',
+        NOW()
+    );
+
+    INSERT INTO users (
+        first_name,
+        last_name,
+        email,
+        phone,
+        password_hash,
+        role,
+        gender,
+        date_of_birth,
+        created_at
+    )
+VALUES (
+        'Hospital',
+        'Admin',
+        'hospital@redhope.com',
+        "1123456789",
+        '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        'Hospital Admin',
         'Male',
         '1990-01-01',
         NOW()

@@ -139,3 +139,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+
+const currentTitle = document.title;
+const onleaveTitle = "Go Back to website";
+
+function changeTitle() {
+  window.onblur = () => {
+    document.title = onleaveTitle;
+  };
+  window.onfocus = () => {
+    document.title = currentTitle;
+  };
+}
+
+changeTitle();
