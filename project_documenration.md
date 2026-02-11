@@ -6,30 +6,27 @@
 
 **Project Name | اسم المشروع: RedHope**
 
+# **Description | الوصف: A blood-donation website that ease the process of donation and facilitate the connection between donators and hospitals | موقع إلكتروني للتبرع بالدم يسهل عملية التبرع ويسهل التواصل بين المتبرعين والمستشفيات**
 
-**Description | الوصف: A blood-donation website that ease the process of donation and facilitate the connection between donators and hospitals | موقع إلكتروني للتبرع بالدم يسهل عملية التبرع ويسهل التواصل بين المتبرعين والمستشفيات**
-=======
-**Description | الوصف:** 
+**Description | الوصف:**
 
-
-**Team Members | أعضاء الفريق:**
----------------------------------------
-
+## **Team Members | أعضاء الفريق:**
 
 1- Mohamed Wael Aboskien
 
-**Github Link:**
-=======
-**Github Link**
+# **Github Link:**
 
+**Github Link
+https://github.com/m7mdaboskien567/red_hope**
 
 ---
 
 ## 2. Features | الميزات
 
-- [ ]
-- [ ]
-- [ ]
+- [ Easy to use]
+- [Fast Response ]
+- [Contains AI Chatbot ]
+
 - [ ]
 
 ---
@@ -38,20 +35,19 @@
 
 **Languages | لغات البرمجة:**
 
-- [ ] HTML
-- [ ] CSS
-- [ ] JavaScript
+- [x] HTML
+- [x] CSS
+- [x] JavaScript
 - [ ] Python
-- [ ] SQL
-- [ ] Other: __________
+- [x] SQL
+- [x] Other: PHP
 
-**Frameworks & Libraries:**
------------------------
+## **Frameworks & Libraries:**
 
 **Data Source | مصدر البيانات:**
 
-- [ ] Database: __________
-- [ ] API: __________
+- [ ] Database: ****\_\_****
+- [ ] API: ****\_\_****
 - [ ] JSON Files
 - [ ] Static Data
 
@@ -88,12 +84,12 @@
 **Digital Marketing | التسويق الرقمي:**
 
 - [ ] Website/Blog
-- [ ] Social Media: __________
+- [ ] Social Media: ****\_\_****
 - [ ] Content Marketing
 
 ---
 
-**Date | التاريخ**: __________
-**Prepared By | أعده**: __________
+**Date | التاريخ**: ****\_\_****
+**Prepared By | أعده**: ****\_\_****
 
 ---

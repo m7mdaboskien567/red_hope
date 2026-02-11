@@ -135,11 +135,8 @@ function validateStep(step) {
                     if (input.value !== password) {
                         isValid = false;
                         input.classList.add('error');
-<<<<<<< HEAD
                         showAlert('Passwords do not match!', 'error');
-=======
                         alert('Passwords do not match!');
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
                     } else {
                         input.classList.add('success');
                     }
@@ -161,11 +158,8 @@ nextBtn.addEventListener('click', () => {
             showStep(currentStep + 1);
         }
     } else {
-<<<<<<< HEAD
         showAlert('Please fill in all required fields correctly.', 'error');
-=======
         alert('Please fill in all required fields correctly.');
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
     }
 });
 
@@ -230,37 +224,22 @@ registerForm.addEventListener('submit', (e) => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-<<<<<<< HEAD
                 showAlert('Registration successful! Welcome to RedHope.', 'success');
                 window.location.href = 'login.php';
             } else {
                 showAlert(data.message || 'Registration failed. Please try again.', 'error');
-=======
-                alert('Registration successful! Welcome to RedHope.');
-                window.location.href = 'login.php';
-            } else {
-                alert(data.message || 'Registration failed. Please try again.');
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
                 submitBtn.innerHTML = 'Create Account <i class="bi bi-check-lg"></i>';
                 submitBtn.disabled = false;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-<<<<<<< HEAD
             showAlert('A system error occurred. Please try again later.', 'error');
-=======
-            alert('A system error occurred. Please try again later.');
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
             submitBtn.innerHTML = 'Create Account <i class="bi bi-check-lg"></i>';
             submitBtn.disabled = false;
         });
     } else {
-<<<<<<< HEAD
         showAlert('Please fill in all required fields correctly.', 'error');
-=======
-        alert('Please fill in all required fields correctly.');
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
     }
 });
 

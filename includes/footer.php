@@ -3,11 +3,7 @@
     <div class="footer-container">
         <div class="footer-col footer-logo-col">
             <div class="footer-logo">
-<<<<<<< HEAD
                 <img src="/redhope/assets/imgs/favicon.png" alt="RedHope Logo">
-=======
-                <img src="assets/imgs/favicon.png" alt="RedHope Logo">
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
             </div>
         </div>
 
@@ -51,13 +47,12 @@
     <i class="bi bi-arrow-up"></i>
 </button>
 
-<<<<<<< HEAD
+
 <!-- Toast Container for Notifications -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="alertContainer" style="z-index: 9999;"></div>
 
 <!-- Bootstrap Bundle JS (includes Popper) -->
-=======
->>>>>>> 9ed3f29124c19bcff361c5c8cc79ace33ba2cf7b
+
 <script src="http://localhost/redhope/assets/js/bootstrap.bundle.min.js"></script>
 <script src="http://localhost/redhope/assets/js/aos.js"></script>
 <script src="http://localhost/redhope/assets/js/global.js"></script>
