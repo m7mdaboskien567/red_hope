@@ -17,7 +17,7 @@
 # **Github Link:**
 
 **Github Link
-https://github.com/m7mdaboskien567/red_hope**
+[https://github.com/m7mdaboskien567/red_hope](https://github.com/m7mdaboskien567/red_hope)**
 
 ---
 
@@ -26,8 +26,7 @@ https://github.com/m7mdaboskien567/red_hope**
 - [ Easy to use]
 - [Fast Response ]
 - [Contains AI Chatbot ]
-
-- [ ]
+- [ Pretty Design]
 
 ---
 
@@ -35,19 +34,18 @@ https://github.com/m7mdaboskien567/red_hope**
 
 **Languages | لغات البرمجة:**
 
-- [x] HTML
-- [x] CSS
-- [x] JavaScript
-- [ ] Python
-- [x] SQL
-- [x] Other: PHP
+- [X] HTML
+- [X] CSS
+- [X] JavaScript
+- [X] MySQL
+- [X] PHP
 
 ## **Frameworks & Libraries:**
 
 **Data Source | مصدر البيانات:**
 
-- [ ] Database: ****\_\_****
-- [ ] API: ****\_\_****
+- [X] Database: ****\_MySQL\_****
+- [X] API: ****\_***
 - [ ] JSON Files
 - [ ] Static Data
 
@@ -57,15 +55,39 @@ https://github.com/m7mdaboskien567/red_hope**
 
 **1. ما هي إمكانيات المشروع؟**
 
+If you want to donate, you can save your time without staying for hours in Blood Centers and Hospitals, just send the request, wait for approvment, go to the selected blood center, DONE! - إذا كنت ترغب في التبرع، يمكنك توفير وقتك دون الحاجة للبقاء لساعات في مراكز الدم والمستشفيات، ما عليك سوى إرسال الطلب، وانتظار التحسن، ثم الذهاب إلى مركز الدم المحدد، وانتهى الأمر!
+
 **2. ما المشكلة التي يحلها المشروع؟**
+
+    1- Waiting for hours
+
+    2- Wasting Time
 
 **3. ما اللغات المستخدمة ولماذا؟**
 
+PHP, JavaScript, MySQL
+
+-> because it's easy, simple, and fast
+
 **4. هل استخدمت API؟ من أين؟**
+
 
 **5. ما هي التقنيات/Frameworks المستخدمة؟**
 
+
 **6. ما أهمية كل تقنية استخدمتها؟**
+
+HTML -> for creating the frontend content
+
+CSS -> to add styles to the website
+
+Bootstrap -> to ease the process of designing and styling
+
+JS -> to make the website interactive and help me use the backend
+
+PHP -> to be able to use backend and integrate it with the frontend
+
+MySQL -> to store data and make database
 
 ---
 

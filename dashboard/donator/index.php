@@ -355,9 +355,6 @@ try {
                                     </div>
                                     <?php if ($appt['status'] === 'Pending' || $appt['status'] === 'Allowed'): ?>
                                     <div class="appointment-actions">
-                                        <button class="btn-reschedule" onclick="openRescheduleModal(<?php echo $appt['appointment_id']; ?>, '<?php echo date('Y-m-d', strtotime($appt['scheduled_time'])); ?>', '<?php echo date('H:i', strtotime($appt['scheduled_time'])); ?>')">
-                                            <i class="bi bi-pencil-square"></i> Reschedule
-                                        </button>
                                         <button class="btn-cancel-appt" onclick="confirmCancelAppointment(<?php echo $appt['appointment_id']; ?>)">
                                             <i class="bi bi-x-circle"></i> Cancel
                                         </button>

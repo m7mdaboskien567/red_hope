@@ -1,11 +1,11 @@
 @import url(global.css);
 
-/* ==================== LAYOUT ==================== */
 #root {
   max-width: 1400px;
   margin: 90px auto 40px;
   padding: 0 2rem;
   min-height: 85vh;
+  margin-top: 125px;
 }
 
 .welcome-part {
@@ -22,7 +22,6 @@
   }
 }
 
-/* ==================== SIDEBAR / INFO CARD ==================== */
 .info-card {
   background: var(--bg-surface);
   border-radius: var(--radius-xl);
@@ -160,14 +159,12 @@
   box-shadow: 0 15px 35px rgba(230, 57, 70, 0.4);
 }
 
-/* ==================== RIGHT SIDE / CONTENT ==================== */
 .additional {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
-/* Statistics Grid */
 .statistics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -231,7 +228,6 @@
   font-weight: 500;
 }
 
-/* ==================== DASHBOARD NAVIGATION ==================== */
 .user_dashboard {
   background: var(--bg-surface);
   border-radius: var(--radius-xl);
@@ -321,7 +317,6 @@
   color: white;
 }
 
-/* ==================== CONTENT SECTIONS ==================== */
 .view-nav {
   background: var(--bg-alt);
   border-radius: var(--radius-lg);
@@ -353,7 +348,6 @@
   padding-bottom: 1rem;
 }
 
-/* ==================== FORMS ==================== */
 .appointment-form-wrapper,
 .profile-form-wrapper {
   background: var(--bg-surface);
@@ -409,7 +403,6 @@ textarea:focus {
   box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
 }
 
-/* ==================== TABLES ==================== */
 .donations-table-wrapper {
   overflow-x: auto;
   background: var(--bg-surface);

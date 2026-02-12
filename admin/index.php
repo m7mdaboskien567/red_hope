@@ -598,16 +598,29 @@ try {
                                             <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>
                                             <td><?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?></td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-primary" 
-                                                        onclick="viewMessage(
-                                                            '<?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>',
-                                                            '<?php echo htmlspecialchars($msg['sender_name']); ?>',
-                                                            '<?php echo htmlspecialchars($msg['receiver_name']); ?>',
-                                                            '<?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?>',
-                                                            `<?php echo htmlspecialchars($msg['message_content']); ?>`
-                                                        )">
-                                                    View
-                                                </button>
+                                                <div class="d-flex gap-1">
+                                                    <button class="btn btn-sm btn-outline-primary" 
+                                                            onclick="viewMessage(
+                                                                '<?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>',
+                                                                '<?php echo htmlspecialchars($msg['sender_name']); ?>',
+                                                                '<?php echo htmlspecialchars($msg['receiver_name']); ?>',
+                                                                '<?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?>',
+                                                                `<?php echo htmlspecialchars($msg['message_content']); ?>`
+                                                            )">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary btn-outline-success" 
+                                                            onclick="replyMessage(
+                                                                <?php echo $msg['sender_id']; ?>, 
+                                                                'Re: <?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>'
+                                                            )">
+                                                        <i class="bi bi-reply"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary btn-outline-danger" 
+                                                            onclick="deleteMessage(<?php echo $msg['message_id']; ?>)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -715,95 +728,6 @@ try {
         </div>
     </div>
 </div>
-
-    <!-- Compose Message Modal -->
-    <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Compose Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="composeForm">
-                        <div class="mb-3">
-                            <label class="form-label">To:</label>
-                            <select id="msg_receiver" class="form-select" required>
-                                <option value="">-- Select Recipient --</option>
-                                <optgroup label="Hospital Admins">
-                                    <?php foreach ($hospital_admins as $admin): ?>
-                                        <option value="<?php echo $admin['user_id']; ?>"><?php echo htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></option>
-                                    <?php endforeach; ?>
-                                </optgroup>
-                                <optgroup label="Donors">
-                                    <?php foreach ($donors as $d): ?>
-                                        <option value="<?php echo $d['user_id']; ?>"><?php echo htmlspecialchars($d['first_name'] . ' ' . $d['last_name']); ?></option>
-                                    <?php endforeach; ?>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Subject:</label>
-                            <input type="text" id="msg_subject" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Message:</label>
-                            <textarea id="msg_content" class="form-control" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    <!-- View Message Modal -->
-    <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Message Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h4 id="view_msg_subject" class="mb-3 fw-bold"></h4>
-                    <div class="d-flex justify-content-between mb-3 text-muted small">
-                        <span>From: <strong id="view_msg_sender"></strong></span>
-                        <span id="view_msg_date"></span>
-                    </div>
-                    <div class="p-3 bg-light rounded border">
-                        <p id="view_msg_content" style="white-space: pre-wrap; margin:0;"></p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Message Modal -->
-    <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Message Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h4 id="view_msg_subject" class="mb-3 fw-bold"></h4>
-                    <div class="d-flex justify-content-between mb-3 text-muted small">
-                        <span>From: <strong id="view_msg_sender"></strong></span>
-                        <span id="view_msg_date"></span>
-                    </div>
-                    <div class="p-3 bg-light rounded border">
-                        <p id="view_msg_content" style="white-space: pre-wrap; margin:0;"></p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Compose Message Modal -->
     <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">

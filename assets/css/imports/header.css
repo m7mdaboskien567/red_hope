@@ -83,7 +83,7 @@ nav div.navpart {
   font-weight: 600;
   cursor: pointer;
   user-select: none !important;
-  transition: all var(--transition-base);
+  transition: all 0.2s ease-in-out;
   position: relative;
   box-shadow: 0 4px 15px rgba(8, 131, 149, 0.3);
   overflow: hidden;
@@ -123,16 +123,18 @@ span#menuBtn {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 30px;
   opacity: 0;
-  transition: all var(--transition-base);
+  transition: all 0.2s ease-in-out;
   z-index: 1;
 }
 
 .btnNav span:hover p {
   z-index: 9;
+  transition: all 0.2s ease-in-out;
 }
 
 .btnNav span:hover::after {
   opacity: 1;
+  transition: all 0.2s ease-in-out;
 }
 
 span#settings {

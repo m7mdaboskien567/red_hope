@@ -474,6 +474,37 @@ function viewMessage(subject, sender, receiver, date, content) {
   }
 }
 
+function replyMessage(senderId, subject) {
+  const receiverSelect = document.getElementById("msg_receiver");
+  const subjectInput = document.getElementById("msg_subject");
+
+  if (receiverSelect) receiverSelect.value = senderId;
+  if (subjectInput) subjectInput.value = subject;
+
+  openComposeModal();
+}
+
+async function deleteMessage(messageId) {
+  if (!confirm("Are you sure you want to delete this message?")) return;
+
+  try {
+    const res = await fetch("/redhope/apis/admin/manage_messages.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", message_id: messageId }),
+    });
+    const result = await res.json();
+    if (result.success) {
+      showAlert(result.message, "success");
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      showAlert(result.message, "error");
+    }
+  } catch (error) {
+    showAlert("An error occurred while deleting the message", "error");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const composeForm = document.getElementById("composeForm");
   if (composeForm) {
