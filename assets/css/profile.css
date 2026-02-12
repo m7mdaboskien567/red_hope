@@ -620,6 +620,35 @@ textarea:focus {
   color: white;
 }
 
+.btn-outline-success{
+  background: transparent;
+  border: 2px solid var(--color-success);
+  color: var(--color-success);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+.btn-outline-success:hover {
+  background: var(--color-success);
+  color: white;
+}
+
+.btn-outline-danger{
+  background: transparent;
+  border: 2px solid var(--color-danger);
+  color: var(--color-danger);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.btn-outline-danger:hover{
+  background: var(--color-danger);
+  color: white;
+}
+
 .chart-card {
   background: var(--bg-surface);
   padding: 1rem;

@@ -609,14 +609,14 @@ try {
                                                             )">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-primary btn-outline-success" 
+                                                    <button class="btn btn-sm btn-outline-success" 
                                                             onclick="replyMessage(
                                                                 <?php echo $msg['sender_id']; ?>, 
                                                                 'Re: <?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>'
                                                             )">
                                                         <i class="bi bi-reply"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-primary btn-outline-danger" 
+                                                    <button class="btn btn-sm btn-outline-danger" 
                                                             onclick="deleteMessage(<?php echo $msg['message_id']; ?>)">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
