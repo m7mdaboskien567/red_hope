@@ -199,8 +199,7 @@ VALUES (
         '1990-01-01',
         NOW()
     );
-
-    INSERT INTO users (
+INSERT INTO users (
         first_name,
         last_name,
         email,
@@ -222,8 +221,7 @@ VALUES (
         '1990-01-01',
         NOW()
     );
-
-    INSERT INTO users (
+INSERT INTO users (
         first_name,
         last_name,
         email,
@@ -244,4 +242,20 @@ VALUES (
         'Male',
         '1990-01-01',
         NOW()
+    );
+INSERT INTO donor_profiles (
+        donor_id,
+        blood_type,
+        weight_kg,
+        is_anonymous,
+        last_donation_date,
+        medical_conditions
+    )
+VALUES (
+        2,
+        'A+',
+        70.00,
+        0,
+        '2023-01-01',
+        'None'
     );

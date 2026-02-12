@@ -450,3 +450,16 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+window.viewMessage = function (subject, sender, date, content) {
+  document.getElementById("view_msg_subject").textContent = subject;
+  document.getElementById("view_msg_sender").textContent = sender;
+  document.getElementById("view_msg_date").textContent = date;
+  document.getElementById("view_msg_content").textContent = content;
+
+  const el = document.getElementById("viewMessageModal");
+  if (el) {
+    const modal = new bootstrap.Modal(el);
+    modal.show();
+  }
+};

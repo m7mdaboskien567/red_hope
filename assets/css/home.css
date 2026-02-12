@@ -8,8 +8,8 @@
 
 body {
   font-family: var(--font-primary);
-  background: #ffffff;
-  color: #1a1a1a;
+  background: var(--bg-body);
+  color: var(--text-primary);
   overflow-x: hidden;
 }
 
@@ -24,7 +24,6 @@ body {
   padding: 0 24px;
 }
 
-/* ==================== HERO SECTION ==================== */
 .hero-modern {
   min-height: 100vh;
   display: flex;
@@ -390,7 +389,6 @@ body {
   display: none;
 }
 
-/* ==================== SECTIONS ==================== */
 .section-donors,
 .section-about,
 .section-contact {
@@ -399,7 +397,7 @@ body {
 }
 
 .section-donors {
-  background: #fafafa;
+  background: var(--bg-alt);
 }
 
 .section-donors::before {
@@ -442,7 +440,7 @@ body {
   font-size: clamp(2.4rem, 5vw, 4rem);
   font-weight: 900;
   font-family: var(--font-heading);
-  color: #0a0a0a;
+  color: var(--text-primary);
   margin-bottom: 20px;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -450,14 +448,13 @@ body {
 
 .section-subtitle {
   font-size: 1.25rem;
-  color: #666;
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.7;
   font-weight: 400;
 }
 
-/* ==================== BLOOD GRID ==================== */
 .blood-types-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -467,7 +464,7 @@ body {
 }
 
 .blood-type-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 20px;
   padding: 32px 28px;
   display: flex;
@@ -536,7 +533,7 @@ body {
 }
 
 .blood-count {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.95rem;
   margin: 0;
   font-weight: 500;
@@ -558,9 +555,8 @@ body {
   box-shadow: 0 0 16px rgba(170, 42, 24, 0.4);
 }
 
-/* ==================== ABOUT SECTION ==================== */
 .section-about {
-  background: #ffffff;
+  background: var(--bg-surface);
 }
 
 .about-grid {
@@ -583,7 +579,7 @@ body {
 .about-text {
   font-size: 1.15rem;
   line-height: 1.9;
-  color: #555;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -599,14 +595,14 @@ body {
   gap: 20px;
   align-items: flex-start;
   padding: 24px;
-  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--bg-alt) 0%, var(--bg-surface) 100%);
   border-radius: 16px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border-subtle);
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .feature-item:hover {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-color: rgba(170, 42, 24, 0.15);
   transform: translateX(10px);
   box-shadow: 0 12px 40px rgba(170, 42, 24, 0.08);
@@ -634,12 +630,12 @@ body {
   font-size: 1.2rem;
   font-weight: 800;
   margin-bottom: 8px;
-  color: #0a0a0a;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .feature-item p {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   margin: 0;
   line-height: 1.6;
@@ -725,9 +721,8 @@ body {
   position: relative;
 }
 
-/* ==================== CONTACT SECTION ==================== */
 .section-contact {
-  background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+  background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg-body) 100%);
 }
 
 .contact-grid {
@@ -749,7 +744,7 @@ body {
 
 .contact-description {
   font-size: 1.15rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 48px;
 }
@@ -764,7 +759,7 @@ body {
   display: flex;
   gap: 20px;
   padding: 28px;
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 18px;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
@@ -800,18 +795,18 @@ body {
   font-size: 1.15rem;
   font-weight: 800;
   margin-bottom: 8px;
-  color: #0a0a0a;
+  color: var(--text-primary);
 }
 
 .info-details p {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   margin: 0;
   line-height: 1.5;
 }
 
 .contact-form-wrapper {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 24px;
   padding: 56px;
   box-shadow: 0 16px 64px rgba(0, 0, 0, 0.06);
@@ -844,7 +839,7 @@ body {
 .form-field label {
   font-weight: 700;
   font-size: 0.95rem;
-  color: #1a1a1a;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -858,19 +853,19 @@ body {
 .form-field input,
 .form-field textarea {
   padding: 18px 22px;
-  border: 2px solid #e8e8e8;
+  border: 2px solid var(--border-subtle);
   border-radius: 14px;
   font-family: var(--font-primary);
   font-size: 1.05rem;
   transition: all 0.3s ease;
-  background: #fafafa;
+  background: var(--bg-alt);
 }
 
 .form-field input:focus,
 .form-field textarea:focus {
   outline: none;
   border-color: #aa2a18;
-  background: #ffffff;
+  background: var(--bg-surface);
   box-shadow: 0 0 0 5px rgba(170, 42, 24, 0.08);
 }
 
@@ -911,7 +906,6 @@ body {
   border: 1px solid rgba(198, 40, 40, 0.2);
 }
 
-/* ==================== RESPONSIVE ==================== */
 @media (max-width: 1200px) {
   .blood-types-grid {
     grid-template-columns: repeat(2, 1fr);

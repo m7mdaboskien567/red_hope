@@ -73,6 +73,17 @@ try {
     $stmt->execute();
     $inventory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // 6. Fetch Messages
+    $stmt = $pdo->prepare("
+        SELECT m.*, CONCAT(u.first_name, ' ', u.last_name) as sender_name 
+        FROM messages m 
+        JOIN users u ON m.sender_id = u.user_id 
+        WHERE m.receiver_id = ? 
+        ORDER BY m.sent_at DESC
+    ");
+    $stmt->execute([$user_id]);
+    $all_messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $blood_types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 } catch (PDOException $e) {
@@ -89,6 +100,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
     <title><?php echo htmlspecialchars($hospital['name']); ?> | Hospital Dashboard</title>
     <?php include __DIR__ . '/../../includes/meta.php'; ?>
     <link rel="stylesheet" href="/redhope/assets/css/profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <?php include __DIR__ . "/../../includes/loader.php"; ?>
@@ -140,6 +152,22 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
 
+                <!-- Charts Section -->
+                <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="chart-card">
+                        <h3 style="font-size: 1.1rem; color: #2d3436; margin-bottom: 1rem;">Request Status</h3>
+                        <div style="height: 250px;">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 style="font-size: 1.1rem; color: #2d3436; margin-bottom: 1rem;">Urgency Distribution</h3>
+                        <div style="height: 250px;">
+                            <canvas id="urgencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="recent-activity">
                     <h3>Urgent Hospital Needs</h3>
                     <?php if (!empty($recent_activity)): ?>
@@ -187,6 +215,12 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     <span onclick="loadSection('profile')">
                         <i class="bi bi-building"></i>
                         <p>Profile</p>
+                    </span>
+                </div>
+                <div>
+                    <span onclick="loadSection('messages')">
+                        <i class="bi bi-envelope"></i>
+                        <p>Messages</p>
                     </span>
                 </div>
             </div>
@@ -349,11 +383,110 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
 
+                <!-- Messages Section -->
+                <div id="messages-section" class="dashboard-section" style="display: none;">
+                    <div class="content-wrapper">
+                        <h2>Messages</h2>
+                        <div class="donations-table-wrapper">
+                            <table class="donations-table">
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Subject</th>
+                                        <th>Sent At</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($all_messages)): ?>
+                                        <?php foreach ($all_messages as $msg): ?>
+                                        <tr>
+                                            <td><strong><?php echo htmlspecialchars($msg['sender_name']); ?></strong></td>
+                                            <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>
+                                            <td><?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="viewMessage(
+                                                            '<?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>',
+                                                            '<?php echo htmlspecialchars($msg['sender_name']); ?>',
+                                                            '<?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?>',
+                                                            `<?php echo htmlspecialchars($msg['message_content']); ?>`,
+                                                            <?php echo $msg['sender_id']; ?>
+                                                        )">
+                                                    Read
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 20px; color: #888;">No messages received.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </section>
             </div>
             
         </section>
     </section>
+
+    <!-- View Message Modal -->
+    <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="view_msg_subject" class="mb-3 fw-bold"></h4>
+                    <div class="d-flex justify-content-between mb-3 text-muted small">
+                        <span>From: <strong id="view_msg_sender"></strong></span>
+                        <span id="view_msg_date"></span>
+                    </div>
+                    <div class="p-3 bg-light rounded border mb-3">
+                        <p id="view_msg_content" style="white-space: pre-wrap; margin:0;"></p>
+                    </div>
+                    <div class="text-end">
+                         <button type="button" class="btn btn-primary" id="replyBtn" onclick="openReplyModal()">
+                            <i class="bi bi-reply"></i> Reply
+                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reply to Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="replyForm">
+                        <input type="hidden" id="reply_receiver_id">
+                        <div class="mb-3">
+                            <label class="form-label">Subject:</label>
+                            <input type="text" id="reply_subject" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Message:</label>
+                            <textarea id="reply_content" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Send Reply</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php include __DIR__ . "/../../includes/footer.php"; ?>
 <script src="/redhope/assets/js/hospital.js"></script>
 <script>
@@ -389,6 +522,54 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         const newUrl = window.location.pathname + '?tab=' + section;
         window.history.pushState({ path: newUrl }, '', newUrl);
     }
+</script>
+<script>
+    // Prepare Data for Charts
+    <?php
+    $status_counts = ['Open' => 0, 'In Progress' => 0, 'Fulfilled' => 0, 'Cancelled' => 0];
+    $urgency_counts = ['Normal' => 0, 'Urgent' => 0, 'Emergency' => 0];
+
+    foreach ($all_hospital_requests as $req) {
+        if (isset($status_counts[$req['status']])) $status_counts[$req['status']]++;
+        if (isset($urgency_counts[$req['urgency_level']])) $urgency_counts[$req['urgency_level']]++;
+    }
+    ?>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // Status Chart
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Open', 'In Progress', 'Fulfilled', 'Cancelled'],
+                datasets: [{
+                    data: [<?php echo implode(',', array_values($status_counts)); ?>],
+                    backgroundColor: ['#f1c40f', '#3498db', '#2ecc71', '#e74c3c'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Urgency Chart
+        new Chart(document.getElementById('urgencyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Normal', 'Urgent', 'Emergency'],
+                datasets: [{
+                    label: 'Requests',
+                    data: [<?php echo implode(',', array_values($urgency_counts)); ?>],
+                    backgroundColor: ['#2ecc71', '#f39c12', '#e74c3c'],
+                    borderRadius: 5
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                plugins: { legend: { display: false } } 
+            }
+        });
+    });
 </script>
 </body>
 </html>

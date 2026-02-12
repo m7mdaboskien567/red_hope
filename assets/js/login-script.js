@@ -1,4 +1,3 @@
-// ==================== PASSWORD TOGGLE ====================
 const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 
@@ -14,7 +13,6 @@ if (togglePassword) {
   });
 }
 
-// ==================== FORM VALIDATION & AJAX LOGIN ====================
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("email");
 
@@ -98,7 +96,6 @@ if (loginForm) {
   });
 }
 
-// ==================== REMEMBER ME ====================
 window.addEventListener("load", () => {
   const rememberedEmail = localStorage.getItem("rememberedEmail");
   if (rememberedEmail && emailInput) {
@@ -108,7 +105,6 @@ window.addEventListener("load", () => {
   }
 });
 
-// ==================== SOCIAL LOGIN ====================
 const socialButtons = document.querySelectorAll(".social-btn");
 socialButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -120,7 +116,6 @@ socialButtons.forEach((btn) => {
   });
 });
 
-// ==================== FORGOT PASSWORD ====================
 const forgotPasswordLink = document.querySelector(".forgot-password");
 if (forgotPasswordLink) {
   forgotPasswordLink.addEventListener("click", (e) => {

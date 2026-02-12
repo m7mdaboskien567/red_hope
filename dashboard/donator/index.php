@@ -107,6 +107,17 @@ try {
     // Reuse $all_requests for the widget (limit 3) if needed, or keep separate query
     $recent_activity = array_slice($all_requests, 0, 3); 
 
+    // 9. Fetch Messages
+    $stmt = $pdo->prepare("
+        SELECT m.*, CONCAT(u.first_name, ' ', u.last_name) as sender_name 
+        FROM messages m 
+        JOIN users u ON m.sender_id = u.user_id 
+        WHERE m.receiver_id = ? 
+        ORDER BY m.sent_at DESC
+    ");
+    $stmt->execute([$_SESSION['user_id']]);
+    $all_messages = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+
 } catch (PDOException $e) {
     // Handle error
 }
@@ -119,6 +130,7 @@ try {
     <title><?php echo $user_name; ?> | Donator Dashboard</title>
     <?php include __DIR__ . '/../../includes/meta.php'; ?>
     <link rel="stylesheet" href="/redhope/assets/css/profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <?php include __DIR__ . "/../../includes/loader.php"; ?>
@@ -166,6 +178,14 @@ try {
                             <h3><?php echo $last_donation_date ? date('M d, Y', strtotime($last_donation_date)) : 'N/A'; ?></h3>
                             <p>Last Donation</p>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Donation History Chart -->
+                <div class="chart-card" style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; color: #2d3436; margin-bottom: 1rem;">My Donation Journey</h3>
+                    <div style="height: 300px;">
+                        <canvas id="donationChart"></canvas>
                     </div>
                 </div>
 
@@ -216,6 +236,12 @@ try {
                     <span onclick="loadSection('history')">
                         <i class="bi bi-clock-history"></i>
                         <p>History</p>
+                    </span>
+                </div>
+                <div>
+                    <span onclick="loadSection('messages')">
+                        <i class="bi bi-envelope"></i>
+                        <p>Messages</p>
                     </span>
                 </div>
             </div>
@@ -433,6 +459,51 @@ try {
                     </div>
                 </div>
 
+                <!-- Messages Section -->
+                <div id="messages-section" class="dashboard-section" style="display: none;">
+                    <div class="content-wrapper">
+                        <h2>Messages</h2>
+                        <div class="donations-table-wrapper">
+                            <table class="donations-table">
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Subject</th>
+                                        <th>Sent At</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($all_messages)): ?>
+                                        <?php foreach ($all_messages as $msg): ?>
+                                        <tr>
+                                            <td><strong><?php echo htmlspecialchars($msg['sender_name']); ?></strong></td>
+                                            <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>
+                                            <td><?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="viewMessage(
+                                                            '<?php echo htmlspecialchars($msg['subject'] ?? 'No Subject'); ?>',
+                                                            '<?php echo htmlspecialchars($msg['sender_name']); ?>',
+                                                            '<?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?>',
+                                                            `<?php echo htmlspecialchars($msg['message_content']); ?>`
+                                                        )">
+                                                    Read
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 20px; color: #888;">No messages received.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </section>
             </div>
             
@@ -472,6 +543,31 @@ try {
             </div>
         </div>
     </div>
+
+    <!-- View Message Modal -->
+    <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="view_msg_subject" class="mb-3 fw-bold"></h4>
+                    <div class="d-flex justify-content-between mb-3 text-muted small">
+                        <span>From: <strong id="view_msg_sender"></strong></span>
+                        <span id="view_msg_date"></span>
+                    </div>
+                    <div class="p-3 bg-light rounded border">
+                        <p id="view_msg_content" style="white-space: pre-wrap; margin:0;"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php include __DIR__ . "/../../includes/footer.php"; ?>
 <script src="/redhope/assets/js/profile.js"></script>
 <script>
@@ -505,6 +601,70 @@ try {
             }, 10);
         }
     }
+</script>
+<script>
+    // Donation History Chart
+    <?php
+    // Prepare data: reverse to show oldest to newest
+    $chart_dates = [];
+    $chart_volumes = [];
+    $history_reversed = array_reverse($donation_history);
+    
+    foreach ($history_reversed as $donation) {
+        if ($donation['status'] === 'Approved' || $donation['status'] === 'Dispatched') {
+            $chart_dates[] = date('M Y', strtotime($donation['donated_at']));
+            $chart_volumes[] = (int)$donation['volume_ml'];
+        }
+    }
+    ?>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('donationChart');
+        if (ctx && <?php echo empty($chart_dates) ? 'false' : 'true'; ?>) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: <?php echo json_encode($chart_dates); ?>,
+                    datasets: [{
+                        label: 'Volume (ml)',
+                        data: <?php echo json_encode($chart_volumes); ?>,
+                        borderColor: '#d4145a',
+                        backgroundColor: 'rgba(212, 20, 90, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#d4145a',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [5, 5] }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#2d3436',
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
+        } else if (ctx) {
+            // Empty state for chart
+            ctx.parentNode.innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#b2bec3;">No confirmed donations yet to display.</div>';
+        }
+    });
 </script>
 </body>
 </html>

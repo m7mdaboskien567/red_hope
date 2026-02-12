@@ -267,3 +267,87 @@ if (!document.querySelector("#hospital-spin-style")) {
     `;
   document.head.appendChild(style);
 }
+
+let currentMessageSenderId = null;
+let currentMessageSubject = "";
+
+window.viewMessage = function (subject, sender, date, content, senderId) {
+  document.getElementById("view_msg_subject").textContent = subject;
+  document.getElementById("view_msg_sender").textContent = sender;
+  document.getElementById("view_msg_date").textContent = date;
+  document.getElementById("view_msg_content").textContent = content;
+
+  currentMessageSenderId = senderId;
+  currentMessageSubject = subject;
+
+  const el = document.getElementById("viewMessageModal");
+  if (el) {
+    const modal = new bootstrap.Modal(el);
+    modal.show();
+  }
+};
+
+window.openReplyModal = function () {
+  // Close View Modal first
+  const viewEl = document.getElementById("viewMessageModal");
+  const viewModal = bootstrap.Modal.getInstance(viewEl);
+  if (viewModal) viewModal.hide();
+
+  // Open Reply Modal
+  const replyEl = document.getElementById("replyModal");
+  if (replyEl) {
+    document.getElementById("reply_receiver_id").value = currentMessageSenderId;
+    document.getElementById("reply_subject").value =
+      "Re: " + currentMessageSubject;
+
+    const modal = new bootstrap.Modal(replyEl);
+    modal.show();
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const replyForm = document.getElementById("replyForm");
+  if (replyForm) {
+    replyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const receiverId = document.getElementById("reply_receiver_id").value;
+      const subject = document.getElementById("reply_subject").value;
+      const content = document.getElementById("reply_content").value;
+      const btn = replyForm.querySelector('button[type="submit"]');
+
+      if (!receiverId || !content) {
+        showAlert("Please fill in all required fields", "error");
+        return;
+      }
+
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<span class="spin"></span> Sending...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/redhope/apis/send_message.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            receiver_id: receiverId,
+            subject: subject,
+            message_content: content,
+          }),
+        });
+        const result = await res.json();
+        if (result.success) {
+          showAlert(result.message, "success");
+          setTimeout(() => location.reload(), 1200);
+        } else {
+          showAlert(result.message, "error");
+          btn.innerHTML = origText;
+          btn.disabled = false;
+        }
+      } catch (error) {
+        showAlert("An error occurred while sending the message", "error");
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    });
+  }
+});

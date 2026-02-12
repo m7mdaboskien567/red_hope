@@ -464,7 +464,7 @@ span#settings i {
 
 .modal-body {
   padding: 40px 32px;
-  background: var(--bg-primary);
+  background: var(--bg-surface);
 }
 
 .setting-item {
@@ -501,8 +501,8 @@ span#settings i {
   align-items: center;
   justify-content: center;
   padding: 24px 20px;
-  background: var(--bg-primary);
-  border: 2px solid var(--border-primary);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
   border-radius: 16px;
   cursor: pointer;
   transition: all var(--transition-base);
@@ -514,7 +514,7 @@ span#settings i {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--gradient-secondary);
+  background: var(--gradient-primary);
   opacity: 0;
   transition: opacity var(--transition-base);
 }
@@ -529,7 +529,7 @@ span#settings i {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--bg-tertiary);
+  background: var(--bg-body);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -557,7 +557,7 @@ span#settings i {
 
 .btn-check:checked + .theme-option {
   border-color: var(--color-accent);
-  background: var(--bg-secondary);
+  background: var(--bg-alt);
   box-shadow: 0 8px 25px var(--color-accent);
 }
 
@@ -566,7 +566,7 @@ span#settings i {
 }
 
 .btn-check:checked + .theme-option .theme-icon {
-  background: var(--gradient-secondary);
+  background: var(--gradient-primary);
   transform: scale(1.1);
 }
 
@@ -582,7 +582,7 @@ span#settings i {
 .modal-footer {
   border: none;
   padding: 20px 32px 28px;
-  background: var(--bg-secondary);
+  background: var(--bg-alt);
   display: flex;
   gap: 12px;
 }

@@ -8,11 +8,12 @@ $user_role = $_SESSION['role'] ?? '';
 <header>
     <nav>
         <div class="navpart logoNav">
-            <h1><a href="index.php">RedHope</a></h1>
+            <h1><a href="/redhope/">RedHope</a></h1>
         </div>
         <div class="navpart btnNav">
             <span id="menuBtn" onclick="openCloseMenu()"><p>Menu</p></span>
-            <div id="authNav" style="display: flex; gap: 0; justify-content: flex-end; align-items: center;">
+            <div id="authNav" style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                <span id="themeToggle" onclick="toggleTheme()" title="Toggle Theme"><p><i class="bi bi-moon-fill"></i></p></span>
                 <?php if ($is_logged_in): ?>
                     <span id="dashboardBtn" onclick="location.href='/redhope/dashboard.php'" title="Dashboard"><p><i class="bi bi-person-fill"></i></p></span>
                     <span id="logoutBtn" onclick="location.href='/redhope/apis/logout.php'" title="Logout"><p><i class="bi bi-box-arrow-right"></i></p></span>

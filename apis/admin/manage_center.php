@@ -24,6 +24,18 @@ try {
         
         echo json_encode(['success' => true, 'message' => 'Center added successfully']);
 
+    } elseif ($action === 'update') {
+        $id = $data['center_id'];
+        $name = trim($data['name']);
+        $address = trim($data['address']);
+        $city = trim($data['city']);
+        $contact = trim($data['contact_number'] ?? '');
+
+        $stmt = $pdo->prepare("UPDATE blood_centers SET name = ?, address = ?, city = ?, contact_number = ? WHERE center_id = ?");
+        $stmt->execute([$name, $address, $city, $contact, $id]);
+
+        echo json_encode(['success' => true, 'message' => 'Center updated successfully']);
+
     } elseif ($action === 'delete') {
         $id = $data['center_id'];
         $stmt = $pdo->prepare("DELETE FROM blood_centers WHERE center_id = ?");
