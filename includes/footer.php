@@ -1,21 +1,18 @@
 
 <footer class="main-footer" data-aos="fade-up">
     <div class="footer-container">
-        <div class="footer-col footer-logo-col">
-            <div class="footer-logo">
-                <img src="/redhope/assets/imgs/favicon.png" alt="RedHope Logo">
-            </div>
-        </div>
-
         <div class="footer-col footer-brand-col">
-            <h2 class="footer-brand">RedHope</h2>
+            <div class="footer-logo-text">
+                <img src="/redhope/assets/imgs/favicon.png" alt="RedHope Logo" class="footer-mini-logo">
+                <h2 class="footer-brand">RedHope</h2>
+            </div>
             <p class="footer-desc">
                 Empowering communities through hope and donation. Join our mission to make a difference in lives across the globe.
             </p>
             <div class="footer-socials">
-                <a href="#"><i class="bi bi-facebook"></i></a>
-                <a href="#"><i class="bi bi-twitter"></i></a>
-                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
             </div>
         </div>
 

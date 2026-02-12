@@ -139,7 +139,6 @@ function validateStep(step) {
             isValid = false;
             input.classList.add("error");
             showAlert("Passwords do not match!", "error");
-            alert("Passwords do not match!");
           } else {
             input.classList.add("success");
           }
@@ -162,7 +161,6 @@ nextBtn.addEventListener("click", () => {
     }
   } else {
     showAlert("Please fill in all required fields correctly.", "error");
-    alert("Please fill in all required fields correctly.");
   }
 });
 

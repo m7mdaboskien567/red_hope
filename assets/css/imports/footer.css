@@ -5,6 +5,7 @@
   position: relative;
   overflow: hidden;
   color: var(--text-primary);
+  transition: background-color var(--transition-smooth);
 }
 
 .footer-container {
@@ -16,37 +17,46 @@
   gap: 4rem;
 }
 
-.footer-col {
+.footer-logo-text {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.footer-mini-logo {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .footer-brand {
   font-family: var(--font-heading);
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  margin-bottom: 1rem;
+  margin: 0;
   background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  display: inline-block;
 }
 
 .footer-desc {
   color: var(--text-secondary);
-  line-height: 1.8;
-  font-size: 1.05rem;
+  line-height: 1.7;
+  font-size: 1rem;
   max-width: 400px;
+  margin-bottom: 1.5rem;
 }
 
 .footer-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
   font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .footer-links,
@@ -56,71 +66,84 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .footer-links a {
   color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.3s;
-  font-size: 1rem;
-  display: inline-block;
+  transition: var(--transition-smooth);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-links a::before {
+  content: "";
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-smooth);
 }
 
 .footer-links a:hover {
   color: var(--color-primary);
-  transform: translateX(5px);
+  padding-left: 5px;
+}
+
+.footer-links a:hover::before {
+  width: 12px;
 }
 
 .footer-contact-info li {
   display: flex;
   gap: 1rem;
   color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .footer-contact-info i {
   color: var(--color-primary);
-  font-size: 1.2rem;
-  margin-top: 2px;
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 
 .footer-socials {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
 }
 
 .footer-socials a {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: var(--bg-surface);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-alt);
   border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-primary);
-  transition: all 0.3s;
-  font-size: 1.2rem;
+  transition: var(--transition-smooth);
+  font-size: 1.1rem;
 }
 
 .footer-socials a:hover {
   background: var(--gradient-primary);
   color: white;
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: transparent;
-  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .footer-bottom {
-  margin-top: 80px;
-  padding-top: 40px;
+  margin-top: 60px;
+  padding-top: 30px;
   border-top: 1px solid var(--border-subtle);
   text-align: center;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 @media (max-width: 1024px) {
@@ -137,27 +160,41 @@
   }
 }
 
-/* go to top btn */
+/* Scroll to top button refined */
 .scroll-top-btn {
   position: fixed;
   bottom: 0;
   right: 0;
   margin: 30px;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 19%;
-  background: transparent;
-  border: 2px solid var(--text-on-dark);
-  color: var(--text-on-dark);
-  font-size: 22px;
-  transition: all 0.3s ease-in-out;
+  border-radius: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-smooth);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+}
+
+.scroll-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .scroll-top-btn:hover {
-  background: var(--text-on-dark);
+  background: var(--gradient-primary);
   color: white;
-  transform: translateY(-4px);
+  border-color: transparent;
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
 }

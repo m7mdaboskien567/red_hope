@@ -5,21 +5,37 @@ if (session_status() === PHP_SESSION_NONE) {
 $is_logged_in = isset($_SESSION['user_id']);
 $user_role = $_SESSION['role'] ?? '';
 ?>
+<script>
+    // Global Session Indicator for Auth Gate
+    window.PHP_SESSION_ACTIVE = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
+</script>
 <header>
     <nav>
         <div class="navpart logoNav">
             <h1><a href="/redhope/">RedHope</a></h1>
         </div>
         <div class="navpart btnNav">
-            <span id="menuBtn" onclick="openCloseMenu()"><p>Menu</p></span>
+            <span id="menuBtn" onclick="openCloseMenu()">
+                <p>Menu</p>
+            </span>
             <div id="authNav" style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
-                <span id="themeToggle" onclick="toggleTheme()" title="Toggle Theme"><p><i class="bi bi-moon-fill"></i></p></span>
+                <span id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <p><i class="bi bi-moon-fill"></i></p>
+                </span>
                 <?php if ($is_logged_in): ?>
-                    <span id="dashboardBtn" onclick="location.href='/redhope/dashboard.php'" title="Dashboard"><p><i class="bi bi-person-fill"></i></p></span>
-                    <span id="logoutBtn" onclick="location.href='/redhope/apis/logout.php'" title="Logout"><p><i class="bi bi-box-arrow-right"></i></p></span>
+                    <span id="dashboardBtn" onclick="location.href='/redhope/dashboard.php'" title="Dashboard">
+                        <p><i class="bi bi-person-fill"></i></p>
+                    </span>
+                    <span id="logoutBtn" onclick="logoutUser()" title="Logout">
+                        <p><i class="bi bi-box-arrow-right"></i></p>
+                    </span>
                 <?php else: ?>
-                    <span id="loginBtn" onclick="location.href='/redhope/login.php'" title="Login"><p><i class="bi bi-box-arrow-in-right"></i></p></span>
-                    <span id="registerBtn" onclick="location.href='/redhope/register.php'" title="Register"><p><i class="bi bi-person-plus"></i></p></span>
+                    <span id="loginBtn" onclick="location.href='/redhope/login.php'" title="Login">
+                        <p><i class="bi bi-box-arrow-in-right"></i></p>
+                    </span>
+                    <span id="registerBtn" onclick="location.href='/redhope/register.php'" title="Register">
+                        <p><i class="bi bi-person-plus"></i></p>
+                    </span>
                 <?php endif; ?>
             </div>
         </div>
@@ -49,7 +65,7 @@ $user_role = $_SESSION['role'] ?? '';
                 <li onclick="location.href='/redhope/admin/?tab=hospitals'">Hospitals</li>
                 <li onclick="location.href='/redhope/admin/?tab=centers'">Centers</li>
             <?php endif; ?>
-            <li onclick="location.href='/redhope/apis/logout.php'">Logout</li>
+            <li onclick="logoutUser()">Logout</li>
         <?php endif; ?>
     </ul>
 </div>
@@ -58,19 +74,19 @@ $user_role = $_SESSION['role'] ?? '';
     const menuBtn = document.getElementById("menuBtn");
     const menu = document.getElementById("menu");
 
-function openCloseMenu() {
-    menu.classList.toggle("active");
-}
+    function openCloseMenu() {
+        menu.classList.toggle("active");
+    }
 
-function closeModalWithAnimation(modalId) {
-    const modalElement = document.getElementById(modalId);
-    if (!modalElement) return;
-    modalElement.classList.add('modal-exit');
+    function closeModalWithAnimation(modalId) {
+        const modalElement = document.getElementById(modalId);
+        if (!modalElement) return;
+        modalElement.classList.add('modal-exit');
 
-    modalElement.addEventListener('animationend', () => {
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) modalInstance.hide();
-        modalElement.classList.remove('modal-exit');
-    }, { once: true });
-}
+        modalElement.addEventListener('animationend', () => {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) modalInstance.hide();
+            modalElement.classList.remove('modal-exit');
+        }, { once: true });
+    }
 </script>

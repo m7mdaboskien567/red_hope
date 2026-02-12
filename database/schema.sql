@@ -259,3 +259,21 @@ VALUES (
         '2023-01-01',
         'None'
     );
+-- 10. AI Chat Sessions
+CREATE TABLE ai_chat_sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) DEFAULT 'New Chat',
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    CONSTRAINT fk_ai_session_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+-- 11. AI Chat Messages
+CREATE TABLE ai_chat_messages (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    sender ENUM('User', 'AI') NOT NULL,
+    message_content TEXT NOT NULL,
+    sent_at DATETIME NOT NULL,
+    CONSTRAINT fk_ai_msg_session FOREIGN KEY (session_id) REFERENCES ai_chat_sessions(session_id) ON DELETE CASCADE
+) ENGINE = InnoDB;

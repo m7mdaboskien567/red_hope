@@ -24,10 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['last_name'] = $user['last_name'];
             $_SESSION['role'] = $user['role'];
 
+            // Generate JWT Token
+            require_once __DIR__ . '/../includes/jwt_helper.php';
+            $token = JWTHelper::generate([
+                'user_id' => $user['user_id'],
+                'role' => $user['role'],
+                'exp' => time() + (86400 * 30) // 30 days
+            ]);
+
             $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
             $updateStmt->execute([$user['user_id']]);
 
-            echo json_encode(['success' => true, 'message' => 'Login successful!']);
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Login successful!',
+                'token' => $token
+            ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid email or password.']);
         }

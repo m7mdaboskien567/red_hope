@@ -1,3 +1,83 @@
+// --- Global JWT Auth Gate ---
+(function () {
+  // Determine site root (handles localhost/redhope/ vs root)
+  const pathParts = window.location.pathname.split("/");
+  const siteRoot = pathParts.includes("redhope") ? "/redhope/" : "/";
+
+  const currentPath = window.location.pathname;
+  const isLoginPage = currentPath.endsWith("login.php");
+  const isProtectedPath =
+    currentPath.includes("/dashboard/") || currentPath.includes("/admin/");
+  const storedToken = localStorage.getItem("redhope_jwt");
+
+  console.log("🛡️ Auth Gate Check:", {
+    sessionActive: window.PHP_SESSION_ACTIVE,
+    hasToken: !!storedToken,
+    path: currentPath,
+  });
+
+  // Case 1: No active session but token exists -> Restore session
+  if (!window.PHP_SESSION_ACTIVE && storedToken) {
+    console.log("🔄 Attempting to restore session from JWT...");
+
+    fetch(siteRoot + "apis/restore_session.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: storedToken }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("📥 Restore Response:", data);
+        if (data.success) {
+          console.log("✅ Session restored successfully.");
+          if (isLoginPage) {
+            window.location.href = siteRoot + "dashboard.php";
+          } else {
+            window.location.reload();
+          }
+        } else {
+          console.warn("❌ Token restoration failed:", data.message);
+          localStorage.removeItem("redhope_jwt");
+          if (isProtectedPath) {
+            window.location.href = siteRoot + "login.php?error=Session+Expired";
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("⚠️ Auth Gate Fetch Error:", err);
+      });
+  }
+
+  // Case 2: No active session and NO token on a protected path -> Redirect to login
+  else if (!window.PHP_SESSION_ACTIVE && !storedToken && isProtectedPath) {
+    console.warn("🚫 Access denied. No session or token found.");
+    window.location.href = siteRoot + "login.php?error=Authentication+Required";
+  }
+
+  // Case 3: ACTIVE session but MISSING token -> Sync token to localStorage
+  else if (window.PHP_SESSION_ACTIVE && !storedToken) {
+    console.log("🔄 Session active but token missing. Syncing...");
+    fetch(siteRoot + "apis/get_current_token.php")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.token) {
+          localStorage.setItem("redhope_jwt", data.token);
+          console.log("✅ Token synced to localStorage.");
+        }
+      })
+      .catch((err) => console.error("⚠️ Token sync failed:", err));
+  }
+})();
+
+// Global Logout Function
+window.logoutUser = function () {
+  localStorage.removeItem("redhope_jwt");
+  const pathParts = window.location.pathname.split("/");
+  const siteRoot = pathParts.includes("redhope") ? "/redhope/" : "/";
+  window.location.href = siteRoot + "apis/logout.php";
+};
+// ----------------------------
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Synchronize AOS with the Custom Loader
   // We wait for the 'pageLoaded' event from loader.php to initialize AOS

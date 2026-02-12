@@ -1,32 +1,38 @@
-const togglePassword = document.getElementById("togglePassword");
-const passwordInput = document.getElementById("password");
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm) return;
 
-if (togglePassword) {
-  togglePassword.addEventListener("click", () => {
-    const type =
-      passwordInput.getAttribute("type") === "password" ? "text" : "password";
-    passwordInput.setAttribute("type", type);
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
 
-    const icon = togglePassword.querySelector("i");
-    icon.classList.toggle("bi-eye");
-    icon.classList.toggle("bi-eye-slash");
-  });
-}
+  if (togglePassword) {
+    togglePassword.addEventListener("click", () => {
+      const type =
+        passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      const icon = togglePassword.querySelector("i");
+      icon.classList.toggle("bi-eye");
+      icon.classList.toggle("bi-eye-slash");
+    });
+  }
 
-const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
+  // "Remember Me" functionality
+  const rememberedEmail = localStorage.getItem("rememberedEmail");
+  if (rememberedEmail && emailInput) {
+    emailInput.value = rememberedEmail;
+    const rememberMeCheck = document.getElementById("rememberMe");
+    if (rememberMeCheck) rememberMeCheck.checked = true;
+  }
 
-if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("🚀 Login attempt started...");
 
-    // Reset previous states
     emailInput.classList.remove("error", "success");
     passwordInput.classList.remove("error", "success");
 
     let isValid = true;
-
-    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailInput.value.trim())) {
       emailInput.classList.add("error");
@@ -35,7 +41,6 @@ if (loginForm) {
       emailInput.classList.add("success");
     }
 
-    // Validate password (basic length check)
     if (passwordInput.value.length < 4) {
       passwordInput.classList.add("error");
       isValid = false;
@@ -44,11 +49,10 @@ if (loginForm) {
     }
 
     if (isValid) {
-      const submitBtn = loginForm.querySelector(".btn-login");
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
-      const rememberMe = document.getElementById("rememberMe").checked;
+      const rememberMe = document.getElementById("rememberMe")?.checked;
 
-      // Loading state
       submitBtn.innerHTML =
         '<span class="spinner-border spinner-border-sm"></span> Signing in...';
       submitBtn.disabled = true;
@@ -64,6 +68,7 @@ if (loginForm) {
         });
 
         const data = await response.json();
+        console.log("📥 Server Response:", data);
 
         if (data.success) {
           if (rememberMe) {
@@ -72,57 +77,53 @@ if (loginForm) {
             localStorage.removeItem("rememberedEmail");
           }
 
-          // Simple success feedback before redirect
+          // CRITICAL: Save JWT Token
+          if (data.token) {
+            console.log("💾 Storing JWT Token in localStorage...");
+            localStorage.setItem("redhope_jwt", data.token);
+            console.log(
+              "✅ Token successfully stored:",
+              localStorage.getItem("redhope_jwt"),
+            );
+          } else {
+            console.warn("⚠️ No token received from server!");
+          }
+
           submitBtn.classList.remove("btn-login");
           submitBtn.classList.add("btn-success");
           submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Success!';
 
           setTimeout(() => {
-            window.location.href = "index.php";
-          }, 1000);
+            window.location.href = "dashboard.php";
+          }, 800);
         } else {
-          showAlert(data.message || "Login failed. Please try again.", "error");
+          showAlert(data.message || "Login failed.", "error");
           submitBtn.innerHTML = originalText;
           submitBtn.disabled = false;
           passwordInput.classList.add("error");
         }
       } catch (error) {
-        console.error("Error:", error);
-        showAlert("A system error occurred. Please try again later.", "error");
+        console.error("❌ Login Error:", error);
+        showAlert("A system error occurred.", "error");
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       }
     }
   });
-}
 
-window.addEventListener("load", () => {
-  const rememberedEmail = localStorage.getItem("rememberedEmail");
-  if (rememberedEmail && emailInput) {
-    emailInput.value = rememberedEmail;
-    const rememberMeCheck = document.getElementById("rememberMe");
-    if (rememberMeCheck) rememberMeCheck.checked = true;
+  // Social/Forgot Password placeholders
+  const socialButtons = document.querySelectorAll(".social-btn");
+  socialButtons.forEach((btn) => {
+    btn.addEventListener("click", () =>
+      showAlert("Social login is disabled.", "info"),
+    );
+  });
+
+  const forgotPasswordLink = document.querySelector(".forgot-password");
+  if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showAlert("Password recovery unavailable.", "warning");
+    });
   }
 });
-
-const socialButtons = document.querySelectorAll(".social-btn");
-socialButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const platform = btn.classList.contains("google") ? "Google" : "Facebook";
-    showAlert(
-      `${platform} login is currently disabled for security. Please use your email.`,
-      "info",
-    );
-  });
-});
-
-const forgotPasswordLink = document.querySelector(".forgot-password");
-if (forgotPasswordLink) {
-  forgotPasswordLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    showAlert(
-      "Password recovery is currently unavailable. Please contact the administrator.",
-      "warning",
-    );
-  });
-}

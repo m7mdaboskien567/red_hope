@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initDonationsFilter();
 });
 
-/**
+/*
  * Personal Info Form Handler
  */
 function initPersonalInfoForm() {

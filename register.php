@@ -80,8 +80,7 @@ if (isset($_SESSION['user_id'])) {
                                 <input type="radio" name="userType" value="donor" required>
                                 <div class="card-content">
                                     <div class="icon">
-                                        <i class="fas fa-hand-holding-heart"></i>
-
+                                        <i class="bi bi-heart-fill"></i>
                                     </div>
                                     <h4>Donor</h4>
                                     <p>I want to donate blood and save lives</p>
