@@ -1,7 +1,3 @@
-/**
- * 🔥 HopeAI — Premium Chat Engine
- * Persistent sessions, history, typewriter, animations
- */
 document.addEventListener("DOMContentLoaded", () => {
   const chatWidget = document.querySelector(".ai-chat-widget");
   if (!chatWidget) return;
