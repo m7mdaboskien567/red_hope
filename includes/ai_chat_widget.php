@@ -10,17 +10,16 @@
                 <button class="ai-history-btn" title="Chat History">
                     <i class="bi bi-clock-history"></i>
                 </button>
-                <div class="ai-history-menu">
-                    <div class="ai-history-header">Recent Chats</div>
-                    <div class="ai-history-list">
-                        <div class="ai-history-item active">
-                            <i class="bi bi-chat-left-text"></i>
-                            <div class="item-details">
-                                <span>Current Session</span>
-                                <small>Today, <?php echo date('H:i'); ?></small>
-                            </div>
-                        </div>
-                        <!-- will be loaded from the db -->
+                <div class="ai-history-menu" id="aiHistoryMenu">
+                    <div class="ai-history-header d-flex justify-content-between align-items-center">
+                        <span>Recent Chats</span>
+                        <button class="btn btn-sm text-primary p-0" id="newChatBtn" title="New Conversation">
+                            <i class="bi bi-plus-circle"></i> New
+                        </button>
+                    </div>
+                    <div class="ai-history-list" id="aiHistoryList">
+                        <!-- Loaded via JS -->
+                        <div class="p-3 text-center text-muted small">Loading history...</div>
                     </div>
                 </div>
             </div>
@@ -30,43 +29,25 @@
 
     <div class="ai-messages" id="aiMessages">
         <div class="ai-message system">
-            <span class="ai-name">HopeAI</span>
-            <p>Hello! I am HopeAI. How can I assist you with your donation journey today?</p>
+            <span class="ai-name">
+                <img src="/redhope/assets/imgs/favicon.png" alt="AI" class="ai-avatar">
+            </span>
+            <div class="message-content">
+                Hello! 👋 I'm <strong>HopeAI</strong>, your personal health assistant. How can I help you today?
+            </div>
             <span class="ai-time"><?php echo date('H:i'); ?></span>
         </div>
     </div>
 
     <div class="ai-input-area">
-        <input type="text" placeholder="Ask HopeAI..." disabled>
-        <button class="ai-send-btn" disabled>
+        <input type="text" placeholder="Type your message...">
+        <button class="ai-send-btn" title="Send">
             <i class="bi bi-send-fill"></i>
         </button>
     </div>
     <div class="ai-footer">
-        <span>AI can make mistakes double check it</span>
+        <span>HopeAI may produce inaccurate info. Double-check important facts.</span>
     </div>
 </div>
 
-<script>
-    console.log("✅ AI Chatbot Widget Loaded");
-
-    // Chat History Dropdown Toggle
-    document.addEventListener('DOMContentLoaded', () => {
-        const historyBtn = document.querySelector('.ai-history-btn');
-        const historyMenu = document.querySelector('.ai-history-menu');
-
-        if (historyBtn && historyMenu) {
-            historyBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                historyMenu.classList.toggle('show');
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!historyMenu.contains(e.target) && !historyBtn.contains(e.target)) {
-                    historyMenu.classList.remove('show');
-                }
-            });
-        }
-    });
-</script>
+<script src="/redhope/assets/js/ai_chat.js"></script>

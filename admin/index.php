@@ -150,6 +150,7 @@ try {
     <?php include __DIR__ . '/../includes/meta.php'; ?>
     <link rel="stylesheet" href="/redhope/assets/css/profile.css">
     <link rel="stylesheet" href="/redhope/assets/css/ai_chat.css">
+    <link rel="stylesheet" href="/redhope/assets/css/ai_admin.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 
@@ -628,16 +629,98 @@ try {
                     <!-- AI DOCS Section (Replacing Inventory) -->
                     <div id="ai-docs-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
-                            <h2>AI Documentation & Insights</h2>
-                            <div class="empty-state" style="text-align: center; padding: 4rem 2rem;">
-                                <i class="bi bi-robot"
-                                    style="font-size: 4rem; color: #d4145a; margin-bottom: 1.5rem; display: block;"></i>
-                                <h3 style="color: #2d3436; margin-bottom: 1rem;">Coming Soon</h3>
-                                <p style="color: #636e72; max-width: 500px; margin: 0 auto;">
-                                    This section will feature advanced AI-driven documentation, predictive analytics for
-                                    blood supply,
-                                    and intelligent donor matching insights.
-                                </p>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2>AI Knowledge Base</h2>
+                                <div class="ai-status" style="margin: 0;">
+                                    <div class="ai-pulse"></div>
+                                    <span style="font-size: 0.9rem; font-weight: 600;">Engine: Llama-3.1-8B</span>
+                                </div>
+                            </div>
+
+                            <div class="kb-stats">
+                                <div class="kb-stat-card">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    <div class="kb-stat-info">
+                                        <h4>Total Docs</h4>
+                                        <p>12</p>
+                                    </div>
+                                </div>
+                                <div class="kb-stat-card">
+                                    <i class="bi bi-hdd-network"></i>
+                                    <div class="kb-stat-info">
+                                        <h4>Vector Store</h4>
+                                        <p>Ready</p>
+                                    </div>
+                                </div>
+                                <div class="kb-stat-card">
+                                    <i class="bi bi-lightning"></i>
+                                    <div class="kb-stat-info">
+                                        <h4>Sync Status</h4>
+                                        <p>Optimal</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="upload-zone" id="uploadZone">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                                <h3>Upload Training Data</h3>
+                                <p>Drag and drop PDF, TXT, or DOCX files to feed HopeAI's knowledge base.</p>
+                                <input type="file" id="aiDocUpload" multiple accept=".pdf,.txt,.docx">
+                            </div>
+
+                            <div class="donations-table-wrapper">
+                                <div class="section-header" style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.02);">
+                                    <h3 style="font-size: 1.1rem; margin: 0;"><i class="bi bi-list-check" style="color: var(--color-primary);"></i> AI Guidance Documents</h3>
+                                </div>
+                                <table class="donations-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Document Name</th>
+                                            <th>Size</th>
+                                            <th>Last Synced</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>redhope_core_philosophy.pdf</strong></td>
+                                            <td>1.2 MB</td>
+                                            <td>Feb 12, 2026</td>
+                                            <td><span class="doc-status-badge active">Active</span></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-primary" title="Re-sync"><i class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>blood_donation_protocols_2025.docx</strong></td>
+                                            <td>450 KB</td>
+                                            <td>Feb 10, 2026</td>
+                                            <td><span class="doc-status-badge active">Active</span></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>hospital_emergency_contacts.txt</strong></td>
+                                            <td>15 KB</td>
+                                            <td>Just Now</td>
+                                            <td><span class="doc-status-badge indexing">Indexing...</span></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled><i class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
