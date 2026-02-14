@@ -322,6 +322,28 @@ body {
   background-color: #5a32a3;
 }
 
+.btn-warning {
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
+  color: #000;
+}
+
+.btn-warning:hover {
+  background-color: #d4ac0d;
+  color: #000;
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+  color: #fff;
+}
+
 .btn-outline-secondary {
   background: transparent;
   border: 1px solid #ccc;
@@ -448,8 +470,6 @@ body {
   }
 }
 
-
-
 @media (max-width: 992px) {
   .dashboard-content {
     padding: 20px;
@@ -474,7 +494,7 @@ body {
   }
 
   .stats-grid {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     gap: 15px;
   }
 

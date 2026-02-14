@@ -106,14 +106,5 @@
         "lat": 30.0131,
         "lng": 31.2089,
         "contact_number": "+20 2 35678901"
-    },
-    {
-        "center_id": 13,
-        "name": "KFS",
-        "address": "KFS",
-        "city": "KFS",
-        "lat": 31.1087769,
-        "lng": 30.9355687,
-        "contact_number": "0111124512"
     }
 ]

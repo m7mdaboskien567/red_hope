@@ -30,9 +30,9 @@
         <div class="footer-col footer-contact-col">
             <h3 class="footer-title">Contact Us</h3>
             <ul class="footer-contact-info">
-                <li><i class="bi bi-geo-alt"></i> 123 Hope St, RedCity, RC 456</li>
+                <li><i class="bi bi-geo-alt"></i> Egypt</li>
                 <li><i class="bi bi-envelope"></i> info@redhope.com</li>
-                <li><i class="bi bi-telephone"></i> +1 (234) 567-890</li>
+                <li><i class="bi bi-telephone"></i> +20 1022144512</li>
             </ul>
         </div>
     </div>
@@ -42,12 +42,12 @@
 </footer>
 
 <button id="scrollTopBtn" class="scroll-top-btn" title="Go to Top">
-    <i class="bi bi-arrow-up"></i>
+    <i class="bi bi-chevron-up"></i>
 </button>
 
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="alertContainer" style="z-index: 9999;"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="http://localhost/redhope/assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="http://localhost/redhope/assets/js/aos.js"></script>
 <script src="http://localhost/redhope/assets/js/global.js"></script>

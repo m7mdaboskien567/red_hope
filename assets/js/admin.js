@@ -12,44 +12,52 @@ function openModal(type, data = null) {
       title.textContent = isEdit ? "Edit User" : "Add User";
       html = `
                 <input type="hidden" id="modal_user_id" value="${isEdit ? data.user_id : ""}">
-                <div class="mb-3">
-                    <label class="form-label">First Name</label>
-                    <input type="text" id="modal_first_name" class="form-control" value="${isEdit ? data.first_name : ""}" required>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" id="modal_first_name" class="form-control" value="${isEdit ? data.first_name : ""}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="modal_last_name" class="form-control" value="${isEdit ? data.last_name : ""}" required>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" id="modal_last_name" class="form-control" value="${isEdit ? data.last_name : ""}" required>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="modal_email" class="form-control" value="${isEdit ? data.email : ""}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" id="modal_phone" class="form-control" value="${isEdit ? data.phone || "" : ""}" required>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="modal_email" class="form-control" value="${isEdit ? data.email : ""}" required>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Role</label>
+                        <select id="modal_role" class="form-select">
+                            <option value="Donor" ${isEdit && data.role === "Donor" ? "selected" : ""}>Donor</option>
+                            <option value="Hospital Admin" ${isEdit && data.role === "Hospital Admin" ? "selected" : ""}>Hospital Admin</option>
+                            <option value="Super Admin" ${isEdit && data.role === "Super Admin" ? "selected" : ""}>Super Admin</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Gender</label>
+                        <select id="modal_gender" class="form-select">
+                            <option value="Male" ${isEdit && data.gender === "Male" ? "selected" : ""}>Male</option>
+                            <option value="Female" ${isEdit && data.gender === "Female" ? "selected" : ""}>Female</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" id="modal_phone" class="form-control" value="${isEdit ? data.phone || "" : ""}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Role</label>
-                    <select id="modal_role" class="form-select">
-                        <option value="Donor" ${isEdit && data.role === "Donor" ? "selected" : ""}>Donor</option>
-                        <option value="Hospital Admin" ${isEdit && data.role === "Hospital Admin" ? "selected" : ""}>Hospital Admin</option>
-                        <option value="Super Admin" ${isEdit && data.role === "Super Admin" ? "selected" : ""}>Super Admin</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Gender</label>
-                    <select id="modal_gender" class="form-select">
-                        <option value="Male" ${isEdit && data.gender === "Male" ? "selected" : ""}>Male</option>
-                        <option value="Female" ${isEdit && data.gender === "Female" ? "selected" : ""}>Female</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Date of Birth</label>
-                    <input type="date" id="modal_dob" class="form-control" value="${isEdit ? data.date_of_birth || "" : ""}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password${isEdit ? " (leave blank to keep current)" : ""}</label>
-                    <input type="password" id="modal_password" class="form-control" ${isEdit ? "" : "required"}>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" id="modal_dob" class="form-control" value="${isEdit ? data.date_of_birth || "" : ""}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password${isEdit ? " (leave blank to keep current)" : ""}</label>
+                        <input type="password" id="modal_password" class="form-control" ${isEdit ? "" : "required"}>
+                    </div>
                 </div>
             `;
       saveBtn.onclick = () => saveUser(isEdit);
@@ -108,24 +116,35 @@ function openModal(type, data = null) {
       break;
 
     case "map_center":
-      title.textContent = "Add Map Center (JSON)";
+      title.textContent = isEdit
+        ? "Edit Map Center (JSON)"
+        : "Add Map Center (JSON)";
       html = `
-                <div class="mb-3">
-                    <label class="form-label">Center Name</label>
-                    <input type="text" id="modal_json_name" class="form-control" required>
+                <input type="hidden" id="modal_json_id" value="${isEdit ? data.center_id : ""}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Center Name</label>
+                        <input type="text" id="modal_json_name" class="form-control" value="${isEdit ? data.name : ""}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input type="text" id="modal_json_contact" class="form-control" value="${isEdit ? data.contact_number || "" : ""}">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" id="modal_json_address" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">City</label>
-                    <input type="text" id="modal_json_city" class="form-control" required>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" id="modal_json_address" class="form-control" value="${isEdit ? data.address : ""}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">City</label>
+                        <input type="text" id="modal_json_city" class="form-control" value="${isEdit ? data.city : ""}" required>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Google Maps Link (Auto-Fill)</label>
                     <div class="input-group">
-                        <input type="text" id="modal_json_link" class="form-control" placeholder="https:
+                        <input type="text" id="modal_json_link" class="form-control" placeholder="https://www.google.com/maps/place/...">
                         <button class="btn btn-outline-primary" type="button" onclick="autoFillFromMapLink(this)">
                             <i class="bi bi-magic"></i> Auto-Fill
                         </button>
@@ -134,19 +153,15 @@ function openModal(type, data = null) {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Latitude</label>
-                        <input type="number" step="any" id="modal_json_lat" class="form-control" placeholder="e.g. 30.0444" required>
+                        <input type="number" step="any" id="modal_json_lat" class="form-control" value="${isEdit ? data.lat : ""}" placeholder="e.g. 30.0444" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Longitude</label>
-                        <input type="number" step="any" id="modal_json_lng" class="form-control" placeholder="e.g. 31.2357" required>
+                        <input type="number" step="any" id="modal_json_lng" class="form-control" value="${isEdit ? data.lng : ""}" placeholder="e.g. 31.2357" required>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Contact Number</label>
-                    <input type="text" id="modal_json_contact" class="form-control">
-                </div>
             `;
-      saveBtn.onclick = () => saveMapCenter();
+      saveBtn.onclick = () => saveMapCenter(isEdit);
       break;
 
     case "inventory":
@@ -380,8 +395,10 @@ async function autoFillFromMapLink(btn) {
   }
 }
 
-async function saveMapCenter() {
+async function saveMapCenter(isEdit = false) {
   const payload = {
+    action: isEdit ? "update" : "create",
+    center_id: isEdit ? document.getElementById("modal_json_id").value : null,
     name: document.getElementById("modal_json_name").value,
     address: document.getElementById("modal_json_address").value,
     city: document.getElementById("modal_json_city").value,
@@ -396,7 +413,7 @@ async function saveMapCenter() {
   }
 
   try {
-    const res = await fetch("/redhope/apis/add_json_center.php", {
+    const res = await fetch("/redhope/apis/admin/manage_json_centers.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -404,6 +421,26 @@ async function saveMapCenter() {
     const result = await res.json();
     if (result.success) {
       showAlert(result.message, "success");
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      showAlert(result.message, "error");
+    }
+  } catch (e) {
+    showAlert("An error occurred", "error");
+  }
+}
+
+async function deleteMapCenter(centerId) {
+  if (!confirm("Are you sure you want to delete this map center?")) return;
+  try {
+    const res = await fetch("/redhope/apis/admin/manage_json_centers.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", center_id: centerId }),
+    });
+    const result = await res.json();
+    if (result.success) {
+      showAlert("Map center deleted successfully", "success");
       setTimeout(() => location.reload(), 1200);
     } else {
       showAlert(result.message, "error");

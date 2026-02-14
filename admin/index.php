@@ -25,18 +25,13 @@ $recent_activity = [];
 $all_map_centers = [];
 
 
-$mapJsonFile = __DIR__ . '/../wp-private/blood_centers_data.json';
-if (file_exists($mapJsonFile)) {
-    $all_map_centers = json_decode(file_get_contents($mapJsonFile), true) ?? [];
-}
-
 
 $blood_type_dist = [];
 $monthly_donations = [];
 $urgency_dist = [];
 
 try {
-    
+
     $stmt = $pdo->prepare("SELECT first_name, last_name FROM users WHERE user_id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,22 +39,22 @@ try {
         $user_name = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
     }
 
-    
+
     $total_donors = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'Donor'")->fetchColumn();
     $total_hospitals = $pdo->query("SELECT COUNT(*) FROM hospitals")->fetchColumn();
     $total_donations = $pdo->query("SELECT COUNT(*) FROM donations WHERE status = 'Approved'")->fetchColumn();
     $open_requests = $pdo->query("SELECT COUNT(*) FROM blood_requests WHERE status = 'Open'")->fetchColumn();
 
-    
+
     $all_users = $pdo->query("SELECT user_id, first_name, last_name, email, phone, role, gender, date_of_birth, created_at FROM users ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_hospitals = $pdo->query("SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as admin_name FROM hospitals h LEFT JOIN users u ON h.admin_id = u.user_id ORDER BY h.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_centers = $pdo->query("SELECT * FROM blood_centers ORDER BY city, name")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_requests = $pdo->query("
         SELECT br.*, h.name as hospital_name, h.city 
         FROM blood_requests br 
@@ -73,7 +68,7 @@ try {
             br.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_donor_profiles = $pdo->query("
         SELECT dp.*, u.first_name, u.last_name, u.email 
         FROM donor_profiles dp 
@@ -81,7 +76,7 @@ try {
         ORDER BY u.first_name ASC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_inventory = $pdo->query("
         SELECT bi.*, 
                COALESCE(bc.name, 'Unknown') as center_name,
@@ -94,7 +89,7 @@ try {
         ORDER BY bi.expiry_date ASC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_messages = $pdo->query("
         SELECT m.*, 
                CONCAT(s.first_name, ' ', s.last_name) as sender_name,
@@ -105,7 +100,7 @@ try {
         ORDER BY m.sent_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_appointments = $pdo->query("
         SELECT a.*, 
                CONCAT(u.first_name, ' ', u.last_name) as donor_name,
@@ -117,13 +112,13 @@ try {
         ORDER BY a.scheduled_time DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $recent_activity = $pdo->query("SELECT first_name, last_name, role, created_at FROM users ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $urgency_dist = $pdo->query("SELECT urgency_level, COUNT(*) as cnt FROM blood_requests GROUP BY urgency_level")->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $all_users_grouped = $pdo->query("SELECT user_id, first_name, last_name, role FROM users WHERE role IN ('Hospital','Donor') ORDER BY role, first_name")->fetchAll(PDO::FETCH_ASSOC);
     $hospital_admins = [];
     $donors = [];
@@ -134,7 +129,7 @@ try {
             $donors[] = $u;
     }
 
-    
+
     $valid_donations = $pdo->query("
         SELECT d.donation_id, CONCAT(u.first_name, ' ', u.last_name) as donor_name, dp.blood_type, d.donated_at
         FROM donations d
@@ -144,7 +139,7 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    
+
 }
 ?>
 <!DOCTYPE html>
@@ -214,7 +209,7 @@ try {
                     </div>
                 </div>
 
-                
+
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
                     <div
                         style="background: var(--card-bg, #fff); border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
@@ -308,7 +303,7 @@ try {
                         <p>Map Data</p>
                     </span>
                 </div>
-                
+
                 <div style="grid-column: span 4; width: 100%; max-width: 100%;">
                     <span onclick="loadSection('ai')">
                         <i class="bi bi-robot"></i>
@@ -317,14 +312,14 @@ try {
                 </div>
             </div>
             <div class="view-nav">
-                
+
                 <div id="ai-section" class="dashboard-section" style="display: none;">
                     <?php include __DIR__ . '/../includes/ai_chat_widget.php'; ?>
                 </div>
 
                 <section id="contentFrameView">
 
-                    
+
                     <div id="users-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -394,7 +389,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="hospitals-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -468,7 +463,7 @@ try {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="map-data-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -488,6 +483,7 @@ try {
                                             <th>City</th>
                                             <th>Coordinates</th>
                                             <th>Contact</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -499,13 +495,26 @@ try {
                                                     <td><?php echo htmlspecialchars($mc['city']); ?></td>
                                                     <td><?php echo $mc['lat'] . ', ' . $mc['lng']; ?></td>
                                                     <td><?php echo htmlspecialchars($mc['contact_number'] ?? 'N/A'); ?></td>
+                                                    <td>
+                                                        <div class="d-flex gap-1 flex-wrap">
+                                                            <button class="btn btn-warning btn-sm"
+                                                                onclick='openModal("map_center", <?php echo json_encode($mc); ?>)'
+                                                                style="font-size: 0.75rem; padding: 4px 12px;">
+                                                                <i class="bi bi-pencil"></i> Edit
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm"
+                                                                onclick="deleteMapCenter(<?php echo $mc['center_id']; ?>)"
+                                                                style="font-size: 0.75rem; padding: 4px 12px;">
+                                                                <i class="bi bi-trash"></i> Delete
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php else: ?>
                                             <tr>
-                                                <td colspan="5" style="text-align: center; padding: 20px; color: 
-                                                    centers
-                                                    in JSON.</td>
+                                                <td colspan="5" style="text-align: center; padding: 20px; color: #888;">No
+                                                    centers found in JSON.</td>
                                             </tr>
                                         <?php endif; ?>
                                     </tbody>
@@ -514,7 +523,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="centers-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -542,10 +551,14 @@ try {
                                             <?php foreach ($all_centers as $center): ?>
                                                 <tr>
                                                     <td><?php echo $center['center_id']; ?></td>
-                                                    <td><strong><?php echo htmlspecialchars($center['name']); ?></strong></td>
-                                                    <td><?php echo htmlspecialchars($center['address']); ?></td>
-                                                    <td><?php echo htmlspecialchars($center['city']); ?></td>
-                                                    <td><?php echo htmlspecialchars($center['contact_number'] ?? 'N/A'); ?></td>
+                                                    <td><strong><?php echo htmlspecialchars($center['name']); ?></strong>
+                                                    </td>
+                                                    <td><?php echo htmlspecialchars($center['address']); ?>
+                                                    </td>
+                                                    <td><?php echo htmlspecialchars($center['city']); ?>
+                                                    </td>
+                                                    <td><?php echo htmlspecialchars($center['contact_number'] ?? 'N/A'); ?>
+                                                    </td>
                                                     <td>
                                                         <div class="d-flex gap-1 flex-wrap">
                                                             <button class="btn btn-warning btn-sm"
@@ -564,7 +577,8 @@ try {
                                             <?php endforeach; ?>
                                         <?php else: ?>
                                             <tr>
-                                                <td colspan="6" style="text-align: center; padding: 20px; color: #888;">No
+                                                <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+                                                    No
                                                     blood centers found.</td>
                                             </tr>
                                         <?php endif; ?>
@@ -574,7 +588,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="requests-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Blood Requests</h2>
@@ -617,7 +631,8 @@ try {
                                                             <?php echo $req['status']; ?>
                                                         </span>
                                                     </td>
-                                                    <td><?php echo date('M d, Y', strtotime($req['created_at'])); ?></td>
+                                                    <td><?php echo date('M d, Y', strtotime($req['created_at'])); ?>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php else: ?>
@@ -632,7 +647,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="donors-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Donor Profiles</h2>
@@ -667,7 +682,8 @@ try {
                                                             <span class="status-badge pending"><i class="bi bi-eye-slash"></i>
                                                                 Yes</span>
                                                         <?php else: ?>
-                                                            <span class="status-badge approved"><i class="bi bi-eye"></i> No</span>
+                                                            <span class="status-badge approved"><i class="bi bi-eye"></i>
+                                                                No</span>
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
@@ -684,7 +700,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="ai-docs-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -692,7 +708,8 @@ try {
                                 <div class="ai-status" style="margin: 0;">
                                     <div class="ai-pulse"></div>
                                     <?php $aiConfig = require __DIR__ . '/../includes/ai_config.php'; ?>
-                                    <span style="font-size: 0.9rem; font-weight: 600;">Engine: <?php echo htmlspecialchars($aiConfig['default_model']); ?></span>
+                                    <span style="font-size: 0.9rem; font-weight: 600;">Engine:
+                                        <?php echo htmlspecialchars($aiConfig['default_model']); ?></span>
                                 </div>
                             </div>
 
@@ -751,10 +768,12 @@ try {
                                             <td><span class="doc-status-badge active">Active</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-primary" title="Re-sync"><i
-                                                            class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger" title="Delete"><i
-                                                            class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-icon btn-outline-primary" title="Re-sync">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                    <button class="btn btn-icon btn-outline-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -765,10 +784,12 @@ try {
                                             <td><span class="doc-status-badge active">Active</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-primary"><i
-                                                            class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger"><i
-                                                            class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-icon btn-outline-primary" title="Re-sync">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                    <button class="btn btn-icon btn-outline-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -779,10 +800,13 @@ try {
                                             <td><span class="doc-status-badge indexing">Indexing...</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-secondary" disabled><i
-                                                            class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger"><i
-                                                            class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-icon btn-outline-secondary" disabled
+                                                        title="Indexing...">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                    <button class="btn btn-icon btn-outline-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -792,7 +816,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="messages-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -822,7 +846,8 @@ try {
                                                     </td>
                                                     <td><?php echo htmlspecialchars($msg['receiver_name']); ?></td>
                                                     <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>
-                                                    <td><?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?></td>
+                                                    <td><?php echo date('M d, Y H:i', strtotime($msg['sent_at'])); ?>
+                                                    </td>
                                                     <td>
                                                         <div class="d-flex gap-1">
                                                             <button class="btn btn-sm btn-outline-primary" onclick="viewMessage(
@@ -860,7 +885,7 @@ try {
                         </div>
                     </div>
 
-                    
+
                     <div id="appointments-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Appointments</h2>
@@ -951,9 +976,9 @@ try {
         </section>
     </section>
 
-    
+
     <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content"
                 style="border-radius: 16px; border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
                 <div class="modal-header" style="border-bottom: 1px solid rgba(0,0,0,0.08); padding: 20px 24px;">
@@ -971,7 +996,7 @@ try {
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -1016,7 +1041,7 @@ try {
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -1044,7 +1069,7 @@ try {
     <?php include __DIR__ . "/../includes/footer.php"; ?>
     <script src="/redhope/assets/js/admin.js"></script>
     <script>
-        
+
         window.centersData = <?php echo json_encode($all_centers); ?>;
         window.donationsData = <?php echo json_encode($valid_donations); ?>;
 
@@ -1062,7 +1087,7 @@ try {
 
             document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
             const target = document.getElementById(section + '-section');
-            
+
             const frame = document.getElementById('contentFrameView');
             if (frame) {
                 frame.style.display = (section === 'ai') ? 'none' : 'block';
@@ -1082,7 +1107,7 @@ try {
         function initCharts() {
             const chartColors = ['#e53e3e', '#dd6b20', '#d69e2e', '#38a169', '#3182ce', '#805ad5', '#d53f8c', '#2b6cb0'];
 
-            
+
             const btLabels = <?php echo json_encode(array_column($blood_type_dist, 'blood_type')); ?>;
             const btData = <?php echo json_encode(array_map('intval', array_column($blood_type_dist, 'cnt'))); ?>;
 
@@ -1107,7 +1132,7 @@ try {
                 });
             }
 
-            
+
             const mdLabels = <?php echo json_encode(array_column($monthly_donations, 'month')); ?>;
             const mdData = <?php echo json_encode(array_map('intval', array_column($monthly_donations, 'cnt'))); ?>;
 
@@ -1131,7 +1156,7 @@ try {
                 }
             });
 
-            
+
             const urgLabels = <?php echo json_encode(array_column($urgency_dist, 'urgency_level')); ?>;
             const urgData = <?php echo json_encode(array_map('intval', array_column($urgency_dist, 'cnt'))); ?>;
             const urgColors = { 'Normal': '#38a169', 'Urgent': '#dd6b20', 'Emergency': '#e53e3e' };
@@ -1158,7 +1183,7 @@ try {
             }
         }
     </script>
-    
+
     <script src="/redhope/assets/js/admin.js?v=<?php echo time(); ?>"></script>
     <script src="/redhope/assets/js/ai_admin.js"></script>
 </body>

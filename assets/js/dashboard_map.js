@@ -30,14 +30,11 @@ async function initDashboardMap() {
     zoomControl: true,
   });
 
-  L.tileLayer(
-    "https:
-    {
-      attribution:
-        '&copy; <a href="https:
-      maxZoom: 19,
-    },
-  ).addTo(dashboardMap);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
+  }).addTo(dashboardMap);
 
   mapInitialized = true;
 
@@ -66,7 +63,7 @@ async function initDashboardMap() {
           <i class="bi bi-telephone"></i>
           <span>${center.contact_number}</span>
         </div>
-        <a href="https:
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
            target="_blank" class="popup-btn">
           <i class="bi bi-sign-turn-right"></i> Get Directions
         </a>

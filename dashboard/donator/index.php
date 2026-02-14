@@ -253,6 +253,12 @@ try {
                     </span>
                 </div>
                 <div>
+                    <span onclick="loadSection('find-center')">
+                        <i class="bi bi-geo-alt"></i>
+                        <p>Find Center</p>
+                    </span>
+                </div>
+                <div>
                     <span onclick="loadSection('messages')">
                         <i class="bi bi-envelope"></i>
                         <p>Messages</p>
@@ -283,16 +289,49 @@ try {
                                 <input type="hidden" name="donor_id"
                                     value="<?php echo $donor_profile['donor_id'] ?? ''; ?>">
                                 <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Select Center</label>
-                                        <select name="center_id" required>
-                                            <option value="">-- Choose Center --</option>
-                                            <?php foreach ($blood_centers as $center): ?>
-                                                <option value="<?php echo $center['center_id']; ?>">
-                                                    <?php echo htmlspecialchars($center['name'] . ' - ' . $center['address'] . ' (' . $center['city'] . ')'); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                    <div class="form-group mb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <label class="mb-0">Select Blood Center</label>
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                id="btn-detect-location">
+                                                <i class="bi bi-geo"></i> Detect Nearest
+                                            </button>
+                                        </div>
+
+                                        <!-- Hidden Input for Form Submission -->
+                                        <input type="hidden" name="center_id" id="selected_center_id" required>
+
+                                        <!-- Modern Card Picker UI -->
+                                        <div class="center-picker-container" id="center-picker">
+                                            <div class="row g-3">
+                                                <?php foreach ($blood_centers as $center): ?>
+                                                    <div class="col-md-6 col-lg-4">
+                                                        <div class="center-card"
+                                                            data-center-id="<?php echo $center['center_id']; ?>"
+                                                            data-lat="<?php echo $center['lat']; ?>"
+                                                            data-lng="<?php echo $center['lng']; ?>">
+                                                            <div class="center-card-content">
+                                                                <div class="center-card-icon">
+                                                                    <i class="bi bi-building"></i>
+                                                                </div>
+                                                                <div class="center-card-info">
+                                                                    <h5 class="center-name">
+                                                                        <?php echo htmlspecialchars($center['name']); ?>
+                                                                    </h5>
+                                                                    <p class="center-addr"><i class="bi bi-geo-alt"></i>
+                                                                        <?php echo htmlspecialchars($center['city']); ?></p>
+                                                                    <span class="distance-badge"
+                                                                        style="display: none;">Finding distance...</span>
+                                                                </div>
+                                                                <div class="center-card-check">
+                                                                    <i class="bi bi-check-circle-fill"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Date</label>
@@ -571,6 +610,30 @@ try {
                     </div>
                 </div>
 
+                <div id="find-center-section" class="dashboard-section" style="display: none;">
+                    <div class="content-wrapper">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h1 class="h2 mb-1">Recommended Centers</h1>
+                                <p class="text-muted">Centers sorted by proximity to your current location.</p>
+                            </div>
+                            <button class="btn-primary" onclick="loadSection('donate')">
+                                <i class="bi bi-droplet"></i> Schedule Now
+                            </button>
+                        </div>
+
+                        <div id="recommended-list" class="row g-4">
+                            <!-- Populated by JS -->
+                            <div class="col-12 text-center py-5">
+                                <div class="spinner-border text-danger" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Calculating distances...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         </section>
         </div>
 
@@ -638,6 +701,7 @@ try {
         </div>
     </div>
     <?php include __DIR__ . "/../../includes/footer.php"; ?>
+    <script src="/redhope/assets/js/location_service.js"></script>
     <script src="/redhope/assets/js/profile.js"></script>
     <script src="/redhope/assets/js/dashboard_map.js"></script>
     <script>

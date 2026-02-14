@@ -64,6 +64,7 @@
   font-size: 0.9rem;
   color: var(--text-primary);
   letter-spacing: 0.3px;
+  justify-content: flex-end;
 }
 
 .ai-pulse {

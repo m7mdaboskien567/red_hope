@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initAppointmentForm();
   initCancelButtons();
   initDonationsFilter();
+  initCenterPicker();
+  initLocationAwareness();
 });
 
 function initPersonalInfoForm() {
@@ -424,5 +426,178 @@ window.viewMessage = function (subject, sender, date, content) {
   if (el) {
     const modal = new bootstrap.Modal(el);
     modal.show();
+  }
+};
+
+/**
+ * Center Picker UI Logic
+ */
+function initCenterPicker() {
+  const container = document.getElementById("center-picker");
+  if (!container) return;
+
+  const cards = container.querySelectorAll(".center-card");
+  const hiddenInput = document.getElementById("selected_center_id");
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      // Clear previous selection
+      cards.forEach((c) => c.classList.remove("selected"));
+      // Set new selection
+      card.classList.add("selected");
+      hiddenInput.value = card.dataset.centerId;
+    });
+  });
+}
+
+/**
+ * Location Resilience & Sorting Logic
+ */
+function initLocationAwareness() {
+  const btn = document.getElementById("btn-detect-location");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Locating...';
+    btn.disabled = true;
+
+    try {
+      const coords = await LocationService.getCurrentPosition();
+      updateDistancesAndSort(coords);
+      showAlert("Location detected! Nearest centers highlighted.", "success");
+    } catch (error) {
+      console.error("Location error:", error);
+      showAlert("Could not detect location: " + error.message, "error");
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // Listen for section loaded to refresh recommendations
+  document.addEventListener("sectionLoaded", (e) => {
+    if (e.detail.section === "find-center") {
+      refreshRecommendations();
+    }
+  });
+}
+
+async function updateDistancesAndSort(userCoords) {
+  const container = document.getElementById("center-picker");
+  if (!container) return;
+
+  const cards = Array.from(container.querySelectorAll(".center-card"));
+  const centers = cards.map((card) => ({
+    id: card.dataset.centerId,
+    lat: parseFloat(card.dataset.lat),
+    lng: parseFloat(card.dataset.lng),
+    element: card,
+  }));
+
+  const sorted = LocationService.sortCentersByProximity(centers, userCoords);
+
+  // Update distance labels in cards
+  sorted.forEach((s, index) => {
+    const badge = s.element.querySelector(".distance-badge");
+    if (badge) {
+      badge.textContent = `${s.distance.toFixed(1)} km away`;
+      badge.style.display = "inline-block";
+    }
+
+    // Add Recommended badge to the first one
+    s.element
+      .querySelectorAll(".picker-recommended-badge")
+      .forEach((b) => b.remove());
+    if (index === 0) {
+      const recBadge = document.createElement("div");
+      recBadge.className = "picker-recommended-badge";
+      recBadge.innerHTML = '<i class="bi bi-star-fill"></i> Recommended';
+      s.element.appendChild(recBadge);
+    }
+  });
+
+  // Auto-select nearest if nothing selected
+  const hiddenInput = document.getElementById("selected_center_id");
+  if (!hiddenInput.value && sorted.length > 0) {
+    sorted[0].element.click();
+    sorted[0].element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+async function refreshRecommendations() {
+  const list = document.getElementById("recommended-list");
+  if (!list) return;
+
+  try {
+    const coords = await LocationService.getCurrentPosition();
+
+    // Fetch centers from DOM metadata (simplest way since they are already rendered)
+    const pickerCards = Array.from(
+      document.querySelectorAll("#center-picker .center-card"),
+    );
+    const centers = pickerCards.map((card) => ({
+      center_id: card.dataset.centerId,
+      name: card.querySelector(".center-name").textContent,
+      address: card.dataset.address || "", // Might be missing in DOM
+      city: card
+        .querySelector(".center-addr")
+        .textContent.replace("Location: ", ""),
+      lat: parseFloat(card.dataset.lat),
+      lng: parseFloat(card.dataset.lng),
+    }));
+
+    const sorted = LocationService.sortCentersByProximity(centers, coords);
+
+    list.innerHTML = sorted
+      .map(
+        (s, index) => `
+      <div class="col-md-6 col-lg-4">
+        <div class="recommended-card h-100">
+          <div class="recommended-card-header">
+            ${index === 0 ? '<span class="recommended-badge">Nearest To You</span>' : ""}
+            <i class="bi bi-geo-alt-fill opacity-50"></i>
+            <h4 class="h5 mb-0 mt-2">${s.name}</h4>
+          </div>
+          <div class="recommended-card-body">
+            <div class="d-flex align-items-baseline gap-2 mb-3">
+              <span class="dist-value">${s.distance.toFixed(1)}</span>
+              <span class="dist-unit">kilometers away</span>
+            </div>
+            <p class="text-muted small mb-0">
+              <i class="bi bi-map"></i> Located in ${s.city}<br>
+              <i class="bi bi-clock"></i> Open until 8:00 PM
+            </p>
+          </div>
+          <div class="recommended-card-footer">
+            <button class="btn btn-sm btn-link text-danger p-0 fw-bold" onclick="selectAndGoToDonate(${s.center_id})">
+              Book Here <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `,
+      )
+      .join("");
+  } catch (error) {
+    list.innerHTML = `
+      <div class="col-12 text-center py-4">
+        <div class="alert alert-warning d-inline-block">
+          <i class="bi bi-geo-alt-fill"></i> Please enable location access to see recommendations.
+        </div>
+      </div>
+    `;
+  }
+}
+
+window.selectAndGoToDonate = function (id) {
+  const card = document.querySelector(`.center-card[data-center-id="${id}"]`);
+  if (card) {
+    card.click();
+    loadSection("donate");
+    // Scroll to form
+    document
+      .getElementById("appointmentForm")
+      .scrollIntoView({ behavior: "smooth" });
   }
 };
