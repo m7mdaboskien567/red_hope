@@ -14,19 +14,19 @@ include_once __DIR__ . '/../../database/config.php';
 
 try {
     if ($action === 'create') {
-        // Validate required fields
+        
         if (empty($data['email']) || empty($data['password']) || empty($data['first_name']) || empty($data['last_name'])) {
             throw new Exception("All fields are required");
         }
 
-        // Check if email already exists
+        
         $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
         $stmt->execute([$data['email']]);
         if ($stmt->fetch()) {
             throw new Exception("Email already exists");
         }
 
-        // Hash password
+        
         $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
 
         $stmt = $pdo->prepare("
@@ -59,7 +59,7 @@ try {
             $user_id
         ];
 
-        // Update password if provided
+        
         if (!empty($data['password'])) {
             $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, role = ?, password_hash = ? WHERE user_id = ?";
             $params = [

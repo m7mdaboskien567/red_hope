@@ -1,4 +1,3 @@
-
 <footer class="main-footer" data-aos="fade-up">
     <div class="footer-container">
         <div class="footer-col footer-brand-col">
@@ -7,7 +6,8 @@
                 <h2 class="footer-brand">RedHope</h2>
             </div>
             <p class="footer-desc">
-                Empowering communities through hope and donation. Join our mission to make a difference in lives across the globe.
+                Empowering communities through hope and donation. Join our mission to make a difference in lives across
+                the globe.
             </p>
             <div class="footer-socials">
                 <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
@@ -22,6 +22,7 @@
                 <li><a href="/redhope/">Home</a></li>
                 <li><a href="/redhope/#about">About Us</a></li>
                 <li><a href="/redhope/#donations">Donations</a></li>
+                <li><a href="/redhope/#map">Map</a></li>
                 <li><a href="/redhope/#contact">Contact</a></li>
             </ul>
         </div>
@@ -45,11 +46,8 @@
 </button>
 
 
-<!-- Toast Container for Notifications -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="alertContainer" style="z-index: 9999;"></div>
-
-<!-- Bootstrap Bundle JS (includes Popper) -->
-
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="http://localhost/redhope/assets/js/bootstrap.bundle.min.js"></script>
 <script src="http://localhost/redhope/assets/js/aos.js"></script>
 <script src="http://localhost/redhope/assets/js/global.js"></script>

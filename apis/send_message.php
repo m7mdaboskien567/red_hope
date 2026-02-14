@@ -21,7 +21,7 @@ if (!$receiver_id || empty($message_content)) {
 include_once __DIR__ . '/../database/config.php';
 
 try {
-    // Validate receiver exists
+    
     $stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ?");
     $stmt->execute([$receiver_id]);
     if (!$stmt->fetch()) {

@@ -12,7 +12,6 @@ if (isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - RedHope</title>
     <?php include  __DIR__ . "/includes/meta.php"; ?>
-    <!-- Custom CSS -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/register.css">
 </head>
@@ -40,7 +39,6 @@ if (isset($_SESSION['user_id'])) {
                     Create an account and start making a difference
                 </p>
                 
-                <!-- Progress Steps -->
                 <div class="progress-steps">
                     <div class="step active" data-step="1">
                         <div class="step-circle">1</div>
@@ -69,8 +67,6 @@ if (isset($_SESSION['user_id'])) {
         <div class="register-right">
             <div class="form-container animate__animated animate__fadeInRight">
                 <form id="registerForm" class="register-form">
-                    
-                    <!-- Step 1: User Type -->
                     <div class="form-step active" data-step="1">
                         <h3>Select Your Role</h3>
                         <p class="step-description">Choose how you want to contribute</p>
@@ -105,8 +101,6 @@ if (isset($_SESSION['user_id'])) {
                             </label>
                         </div>
                     </div>
-                    
-                    <!-- Step 2: Name -->
                     <div class="form-step" data-step="2">
                         <h3>Personal Information</h3>
                         <p class="step-description">Tell us your name</p>
@@ -139,8 +133,6 @@ if (isset($_SESSION['user_id'])) {
                             >
                         </div>
                     </div>
-                    
-                    <!-- Step 3: Contact -->
                     <div class="form-step" data-step="3">
                         <h3>Contact Information</h3>
                         <p class="step-description">How can we reach you?</p>
@@ -173,8 +165,6 @@ if (isset($_SESSION['user_id'])) {
                             >
                         </div>
                     </div>
-                    
-                    <!-- Step 4: Details (Gender, DOB, Blood Type) -->
                     <div class="form-step" data-step="4">
                         <h3>Additional Details</h3>
                         <p class="step-description">Help us know you better</p>
@@ -254,8 +244,6 @@ if (isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Step 5: Password & Terms -->
                     <div class="form-step" data-step="5">
                         <h3>Security & Agreement</h3>
                         <p class="step-description">Secure your account</p>
@@ -308,8 +296,6 @@ if (isset($_SESSION['user_id'])) {
                             </label>
                         </div>
                     </div>
-                    
-                    <!-- Navigation Buttons -->
                     <div class="form-navigation">
                         <button type="button" class="btn-nav btn-prev" id="prevBtn">
                             <i class="bi bi-arrow-left"></i>
@@ -335,7 +321,6 @@ if (isset($_SESSION['user_id'])) {
 
 
     <?php include  __DIR__ . "/includes/footer.php"; ?>
-    <!-- Custom JS -->
     <script src="assets/js/register.js"></script>
 </body>
 </html>

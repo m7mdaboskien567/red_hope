@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($role === 'Donor' && !empty($bloodType)) {
             $stmtDonor = $pdo->prepare("INSERT INTO donor_profiles (donor_id, blood_type, weight_kg) VALUES (?, ?, ?)");
-            // weight_kg is NOT NULL in schema but we don't have it in form yet, using default 0 for now or update schema
+            
             $stmtDonor->execute([$userId, $bloodType, 0]);
         }
 

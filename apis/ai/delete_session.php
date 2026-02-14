@@ -21,7 +21,7 @@ if (!$sessionId) {
 $pdo = getDB();
 
 try {
-    // Verify ownership
+    
     $check = $pdo->prepare("SELECT user_id FROM ai_chat_sessions WHERE session_id = ?");
     $check->execute([$sessionId]);
     $session = $check->fetch();
@@ -31,7 +31,7 @@ try {
         exit();
     }
 
-    // Delete messages first (foreign key), then session
+    
     $pdo->prepare("DELETE FROM ai_chat_messages WHERE session_id = ?")->execute([$sessionId]);
     $pdo->prepare("DELETE FROM ai_chat_sessions WHERE session_id = ?")->execute([$sessionId]);
 

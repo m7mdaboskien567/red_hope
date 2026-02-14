@@ -1,4 +1,4 @@
-/* --- Main Container --- */
+
 .ai-chat-widget {
   margin-top: 0;
   padding: 0;
@@ -44,7 +44,7 @@
   }
 }
 
-/* --- Header --- */
+
 .ai-header {
   display: flex;
   justify-content: space-between;
@@ -95,7 +95,7 @@
   }
 }
 
-/* --- Header Actions --- */
+
 .ai-header-actions {
   display: flex;
   align-items: center;
@@ -129,7 +129,7 @@
   box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
 }
 
-/* --- History Dropdown --- */
+
 .ai-history-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -240,7 +240,7 @@
   color: var(--color-primary);
 }
 
-/* History Action Buttons */
+
 .history-actions {
   display: flex;
   gap: 2px;
@@ -299,7 +299,7 @@
   }
 }
 
-/* --- Messages Area --- */
+
 .ai-messages {
   flex: 1;
   height: 380px;
@@ -311,7 +311,7 @@
   scroll-behavior: smooth;
 }
 
-/* Scrollbar */
+
 .ai-messages::-webkit-scrollbar {
   width: 5px;
 }
@@ -326,7 +326,7 @@
   background: rgba(128, 128, 128, 0.35);
 }
 
-/* --- Message Bubble Base --- */
+
 .ai-message {
   max-width: 80%;
   padding: 14px 18px;
@@ -355,16 +355,16 @@
   }
 }
 
-/* --- AI Messages (Left) --- */
+
 .ai-message.system {
-  /* background: var(--bg-alt); */
+  
   color: var(--text-primary);
   align-self: flex-start;
   border-bottom-left-radius: 6px;
-  /* border: 1px solid var(--border-subtle); */
+  
 }
 
-/* --- User Messages (Right) --- */
+
 .ai-message.user {
   background: linear-gradient(135deg, #e63946, #ff6b81);
   color: white;
@@ -392,7 +392,7 @@
   font-weight: 800;
 }
 
-/* --- Message Content Styling --- */
+
 .ai-message .message-content {
   margin: 0;
   word-wrap: break-word;
@@ -435,7 +435,7 @@
   color: #fff;
 }
 
-/* --- Avatar / Name Row --- */
+
 .ai-name {
   display: flex;
   align-items: center;
@@ -481,7 +481,7 @@
   opacity: 1;
 }
 
-/* --- Typing Indicator --- */
+
 .typing-indicator .message-content p {
   display: flex;
   align-items: center;
@@ -520,7 +520,7 @@
   }
 }
 
-/* --- Input Area --- */
+
 .ai-input-area {
   display: flex;
   align-items: center;
@@ -581,7 +581,7 @@
   transform: translateY(0) scale(0.95);
 }
 
-/* --- Footer --- */
+
 .ai-footer {
   text-align: center;
   font-size: 0.7rem;
@@ -591,7 +591,7 @@
   opacity: 0.7;
 }
 
-/* --- Typing Dots Animation --- */
+
 .typing-dots {
   display: flex;
   align-items: center;
@@ -637,7 +637,7 @@
   }
 }
 
-/* --- Code Blocks --- */
+
 .ai-message .message-content pre {
   background: rgba(0, 0, 0, 0.06);
   border-radius: 8px;
@@ -664,7 +664,7 @@
   padding: 0;
 }
 
-/* ═══ Responsive ═══ */
+
 @media (max-width: 768px) {
   .ai-chat-widget {
     min-height: 400px;

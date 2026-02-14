@@ -18,7 +18,7 @@ try {
         $address = trim($data['address']);
         $city = trim($data['city']);
         
-        // For now using default coordinates (0,0) as GPS isn't implemented in UI yet
+        
         $stmt = $pdo->prepare("INSERT INTO blood_centers (name, address, city, gps_coordinates) VALUES (?, ?, ?, POINT(0, 0))");
         $stmt->execute([$name, $address, $city]);
         

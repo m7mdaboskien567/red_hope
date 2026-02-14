@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/jwt_helper.php';
 
 session_start();
 
-// Get the token from the request
+
 $data = json_decode(file_get_contents('php://input'), true);
 $token = $data['token'] ?? null;
 
@@ -17,13 +17,13 @@ if (!$token) {
 $payload = JWTHelper::verify($token);
 
 if ($payload && isset($payload['user_id'])) {
-    // Check if token is expired
+
     if (isset($payload['exp']) && $payload['exp'] < time()) {
         echo json_encode(['success' => false, 'message' => 'Token has expired.']);
         exit();
     }
 
-    // Re-fetch user data to ensure the account is still valid/active
+
     try {
         $stmt = $pdo->prepare("SELECT user_id, first_name, last_name, role FROM users WHERE user_id = ?");
         $stmt->execute([$payload['user_id']]);

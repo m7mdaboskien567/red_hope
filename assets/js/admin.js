@@ -1,8 +1,3 @@
-/**
- * Admin Dashboard Management Functions
- * Handles CRUD operations for Users, Hospitals, Blood Centers, and Inventory
- */
-
 function openModal(type, data = null) {
   const modal = document.getElementById("adminModal");
   const title = document.getElementById("adminModalLabel");
@@ -112,16 +107,56 @@ function openModal(type, data = null) {
       saveBtn.onclick = () => saveCenter(isEdit);
       break;
 
+    case "map_center":
+      title.textContent = "Add Map Center (JSON)";
+      html = `
+                <div class="mb-3">
+                    <label class="form-label">Center Name</label>
+                    <input type="text" id="modal_json_name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" id="modal_json_address" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" id="modal_json_city" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Google Maps Link (Auto-Fill)</label>
+                    <div class="input-group">
+                        <input type="text" id="modal_json_link" class="form-control" placeholder="https:
+                        <button class="btn btn-outline-primary" type="button" onclick="autoFillFromMapLink(this)">
+                            <i class="bi bi-magic"></i> Auto-Fill
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Latitude</label>
+                        <input type="number" step="any" id="modal_json_lat" class="form-control" placeholder="e.g. 30.0444" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Longitude</label>
+                        <input type="number" step="any" id="modal_json_lng" class="form-control" placeholder="e.g. 31.2357" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contact Number</label>
+                    <input type="text" id="modal_json_contact" class="form-control">
+                </div>
+            `;
+      saveBtn.onclick = () => saveMapCenter();
+      break;
+
     case "inventory":
       title.textContent = isEdit ? "Edit Inventory Item" : "Add Inventory Item";
-      // Build center options from the global centersData
       const centerOpts = (window.centersData || [])
         .map(
           (c) =>
             `<option value="${c.center_id}" ${isEdit && data.current_location_id == c.center_id ? "selected" : ""}>${c.name} - ${c.city}</option>`,
         )
         .join("");
-      // Build donation options from global donationsData
       const donationOpts = (window.donationsData || [])
         .map(
           (d) =>
@@ -294,6 +329,74 @@ async function saveInventory(isEdit) {
 
   try {
     const res = await fetch("/redhope/apis/admin/manage_inventory.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const result = await res.json();
+    if (result.success) {
+      showAlert(result.message, "success");
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      showAlert(result.message, "error");
+    }
+  } catch (e) {
+    showAlert("An error occurred", "error");
+  }
+}
+
+async function autoFillFromMapLink(btn) {
+  const input = document.getElementById("modal_json_link");
+  const url = input.value.trim();
+  if (!url) {
+    showAlert("Please paste a Google Maps link first", "error");
+    return;
+  }
+
+  const origHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+  try {
+    const res = await fetch("/redhope/apis/admin/resolve_map_link.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("modal_json_lat").value = data.lat;
+      document.getElementById("modal_json_lng").value = data.lng;
+      showAlert("Coordinates extracted!", "success");
+    } else {
+      showAlert(data.message || "Could not extract coordinates", "error");
+    }
+  } catch (e) {
+    showAlert("Error resolving link", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+  }
+}
+
+async function saveMapCenter() {
+  const payload = {
+    name: document.getElementById("modal_json_name").value,
+    address: document.getElementById("modal_json_address").value,
+    city: document.getElementById("modal_json_city").value,
+    lat: document.getElementById("modal_json_lat").value,
+    lng: document.getElementById("modal_json_lng").value,
+    contact_number: document.getElementById("modal_json_contact").value,
+  };
+
+  if (!payload.name || !payload.lat || !payload.lng) {
+    showAlert("Please fill in all required fields (Name, Lat, Lng)", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch("/redhope/apis/add_json_center.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

@@ -14,19 +14,19 @@ include_once __DIR__ . '/../../database/config.php';
 
 try {
     if ($action === 'create') {
-        // Validate
+        
         if (empty($data['name']) || empty($data['address']) || empty($data['city']) || empty($data['contact_number'])) {
             throw new Exception("All fields are required");
         }
 
-        // Check if email already exists
+        
         $stmt = $pdo->prepare("SELECT hospital_id FROM hospitals WHERE email = ?");
         $stmt->execute([$data['email']]);
         if ($stmt->fetch()) {
             throw new Exception("Email already exists");
         }
 
-        // Insert as Verified by default since admin created it
+        
         $stmt = $pdo->prepare("
             INSERT INTO hospitals (name, address, city, contact_number, email, is_verified, created_at)
             VALUES (?, ?, ?, ?, ?, 1, NOW())

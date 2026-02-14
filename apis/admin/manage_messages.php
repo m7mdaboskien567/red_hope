@@ -2,7 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 
-// Auth Check — Super Admin only
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Super Admin') {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit();

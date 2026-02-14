@@ -1,5 +1,4 @@
 function initHospitalCharts() {
-    // Get data passed from PHP
     const data = window.hospitalData || {
         requests: {
             open: 0,
@@ -13,11 +12,9 @@ function initHospitalCharts() {
         }
     };
 
-    // Global Chart Defaults
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     Chart.defaults.color = 'rgba(0,0,0,0.5)';
 
-    // Cleanup existing charts if they exist
     ['requestStatusChart', 'urgencyChart'].forEach(id => {
         const canvas = document.getElementById(id);
         if (canvas) {
@@ -26,7 +23,6 @@ function initHospitalCharts() {
         }
     });
 
-    // 1. Request Status Chart (Doughnut)
     const statusCtx = document.getElementById('requestStatusChart');
     if (statusCtx) {
         new Chart(statusCtx, {
@@ -36,8 +32,8 @@ function initHospitalCharts() {
                 datasets: [{
                     data: [data.requests.open, data.requests.fulfilled],
                     backgroundColor: [
-                        '#fbb03b', // Pending (Orange/Yellow)
-                        '#d4145a'  // Fulfilled (Pink/Red)
+                        '#fbb03b', 
+                        '#d4145a' 
                     ],
                     borderWidth: 0,
                     hoverOffset: 10
@@ -61,7 +57,6 @@ function initHospitalCharts() {
         });
     }
 
-    // 2. Urgency Distribution Chart (Bar)
     const urgencyCtx = document.getElementById('urgencyChart');
     if (urgencyCtx) {
         new Chart(urgencyCtx, {
@@ -72,10 +67,10 @@ function initHospitalCharts() {
                     label: 'Requests',
                     data: [data.urgency.Critical, data.urgency.High, data.urgency.Medium, data.urgency.Normal],
                     backgroundColor: [
-                        '#dc2626', // Critical
-                        '#f59e0b', // High
-                        '#3b82f6', // Medium
-                        '#10b981'  // Normal
+                        '#dc2626', 
+                        '#f59e0b', 
+                        '#3b82f6', 
+                        '#10b981'  
                     ],
                     borderRadius: 10,
                     barThickness: 30

@@ -19,7 +19,7 @@ if (!$request_id) {
 }
 
 try {
-    // 1. Check if the request exists and is open
+    
     $stmt = $pdo->prepare("SELECT * FROM blood_requests WHERE request_id = ? AND status = 'Open'");
     $stmt->execute([$request_id]);
     $request = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -29,11 +29,11 @@ try {
         exit();
     }
 
-    // 2. Update Request Status to 'In Progress' and assign Donor
+    
     $stmt = $pdo->prepare("UPDATE blood_requests SET status = 'In Progress', donor_id = ? WHERE request_id = ?");
     $stmt->execute([$donor_id, $request_id]);
 
-    // 3. Fetch Hospital Info for the donor
+    
     $stmt = $pdo->prepare("SELECT name, address, city, contact_number, email FROM hospitals WHERE hospital_id = ?");
     $stmt->execute([$request['hospital_id']]);
     $hospital = $stmt->fetch(PDO::FETCH_ASSOC);

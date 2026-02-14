@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // "Remember Me" functionality
   const rememberedEmail = localStorage.getItem("rememberedEmail");
   if (rememberedEmail && emailInput) {
     emailInput.value = rememberedEmail;
@@ -77,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.removeItem("rememberedEmail");
           }
 
-          // CRITICAL: Save JWT Token
           if (data.token) {
             console.log("💾 Storing JWT Token in localStorage...");
             localStorage.setItem("redhope_jwt", data.token);
@@ -111,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Social/Forgot Password placeholders
   const socialButtons = document.querySelectorAll(".social-btn");
   socialButtons.forEach((btn) => {
     btn.addEventListener("click", () =>

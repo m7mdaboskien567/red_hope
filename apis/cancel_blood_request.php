@@ -27,7 +27,7 @@ if (empty($request_id)) {
 }
 
 try {
-    // Verify the request belongs to a hospital this admin manages
+    
     $stmt = $pdo->prepare("
         SELECT * FROM blood_requests 
         WHERE request_id = ? AND status = 'Open'

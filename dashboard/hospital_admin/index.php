@@ -18,12 +18,12 @@ $all_hospital_requests = [];
 $recent_activity = [];
 
 try {
-    // 1. Fetch Admin Data
+    
     $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Fetch Hospital Data
+    
     $stmt = $pdo->prepare("SELECT * FROM hospitals WHERE admin_id = ?");
     $stmt->execute([$user_id]);
     $hospital = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ try {
 
     $hospital_id = $hospital['hospital_id'];
 
-    // 3. Fetch Blood Requests & Stats (Include Donor Names if Progressing)
+    
     $stmt = $pdo->prepare("
         SELECT br.*, u.first_name as donor_first, u.last_name as donor_last, u.phone as donor_phone
         FROM blood_requests br
@@ -55,7 +55,7 @@ try {
             $total_units_needed += $req['units_requested'];
     }
 
-    // 4. Recent Activity (Open high priority requests)
+    
     $stmt = $pdo->prepare("
         SELECT * FROM blood_requests 
         WHERE hospital_id = ? AND status = 'Open'
@@ -65,7 +65,7 @@ try {
     $stmt->execute([$hospital_id]);
     $recent_activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 5. Fetch Inventory for display
+    
     $stmt = $pdo->prepare("
         SELECT bi.*, bc.name as center_name, bc.city as center_city
         FROM blood_inventory bi
@@ -76,7 +76,7 @@ try {
     $stmt->execute();
     $inventory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 6. Fetch Messages
+    
     $stmt = $pdo->prepare("
         SELECT m.*, CONCAT(u.first_name, ' ', u.last_name) as sender_name 
         FROM messages m 
@@ -90,7 +90,7 @@ try {
     $blood_types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 } catch (PDOException $e) {
-    // Basic error handling
+    
 }
 
 $user_name = $user['first_name'] . ' ' . $user['last_name'];
@@ -127,7 +127,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </span>
                     </div>
                 </div>
-                <!-- Quick action button -->
+                
                 <a href="javascript:void(0)" onclick="loadSection('new-request')" class="btn-donate-now">
                     <i class="bi bi-plus-circle"></i> New Request
                 </a>
@@ -158,7 +158,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
 
-                <!-- Charts Section -->
+                
                 <div class="charts-grid"
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
                     <div class="chart-card">
@@ -242,12 +242,12 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
             <div class="view-nav">
                 <section id="contentFrameView">
 
-                    <!-- AI Section -->
+                    
                     <div id="ai-section" class="dashboard-section" style="display: none;">
                         <?php include __DIR__ . '/../../includes/ai_chat_widget.php'; ?>
                     </div>
 
-                    <!-- New Request Section -->
+                    
                     <div id="new-request-section" class="dashboard-section" style="display: none;">
                         <div class="appointment-form-wrapper" style="margin: 0; box-shadow: none;">
                             <h2>Submit Blood Request</h2>
@@ -288,7 +288,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    <!-- All Requests Section -->
+                    
                     <div id="all-requests-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Hospital Request History</h2>
@@ -335,7 +335,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    <!-- Donations History Section -->
+                    
                     <div id="donations-history-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Fulfilled Donations History</h2>
@@ -379,7 +379,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    <!-- Profile Section -->
+                    
                     <div id="profile-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Admin & Hospital Profile</h2>
@@ -418,7 +418,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    <!-- Messages Section -->
+                    
                     <div id="messages-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Messages</h2>
@@ -471,7 +471,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         </section>
     </section>
 
-    <!-- View Message Modal -->
+    
     <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -498,7 +498,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         </div>
     </div>
 
-    <!-- Reply Modal -->
+    
     <div class="modal fade" id="replyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -527,23 +527,23 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
     <script src="/redhope/assets/js/hospital.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Show default section or section from URL
+            
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab') || 'new-request';
             loadSection(tab);
         });
 
         function loadSection(section) {
-            // 1. Update Buttons Active State
+            
             document.querySelectorAll('.nav-links-btns span').forEach(el => el.classList.remove('active'));
 
             const activeBtn = document.querySelector(`.nav-links-btns span[onclick="loadSection('${section}')"]`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            // 2. Hide All Sections
+            
             document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
 
-            // 3. Show Target Section
+            
             const target = document.getElementById(section + '-section');
             if (target) {
                 target.style.display = 'block';
@@ -554,13 +554,13 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                 }, 10);
             }
 
-            // Update URL
+            
             const newUrl = window.location.pathname + '?tab=' + section;
             window.history.pushState({ path: newUrl }, '', newUrl);
         }
     </script>
     <script>
-        // Prepare Data for Charts
+        
         <?php
         $status_counts = ['Open' => 0, 'In Progress' => 0, 'Fulfilled' => 0, 'Cancelled' => 0];
         $urgency_counts = ['Normal' => 0, 'Urgent' => 0, 'Emergency' => 0];
@@ -574,7 +574,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         ?>
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Status Chart
+            
             new Chart(document.getElementById('statusChart'), {
                 type: 'doughnut',
                 data: {
@@ -588,7 +588,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // Urgency Chart
+            
             new Chart(document.getElementById('urgencyChart'), {
                 type: 'bar',
                 data: {

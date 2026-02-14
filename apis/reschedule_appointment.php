@@ -38,7 +38,7 @@ if (strtotime($scheduled_datetime) <= time()) {
 }
 
 try {
-    // Verify ownership and status
+    
     $stmt = $pdo->prepare("
         SELECT * FROM appointments 
         WHERE appointment_id = ? AND donor_id = ? AND status IN ('Pending', 'Allowed')

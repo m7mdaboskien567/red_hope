@@ -1,7 +1,3 @@
-/**
- * RedHope Hospital Admin Dashboard JavaScript
- */
-
 document.addEventListener("DOMContentLoaded", () => {
   initBloodRequestForm();
   initCancelRequestButtons();
@@ -10,9 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initInventoryFilter();
 });
 
-/**
- * Blood Request Form Handler
- */
 function initBloodRequestForm() {
   const form = document.getElementById("bloodRequestForm");
   if (!form) return;
@@ -57,9 +50,6 @@ function initBloodRequestForm() {
   });
 }
 
-/**
- * Cancel Request Buttons
- */
 async function confirmCancelRequest(requestId) {
   if (!confirm("Are you sure you want to cancel this blood request?")) {
     return;
@@ -94,12 +84,9 @@ async function confirmCancelRequest(requestId) {
 }
 
 function initCancelRequestButtons() {
-  // Handled via onclick in HTML
+  
 }
 
-/**
- * Admin Profile Form Handler
- */
 function initAdminProfileForm() {
   const form = document.getElementById("adminProfileForm");
   if (!form) return;
@@ -144,9 +131,6 @@ function initAdminProfileForm() {
   });
 }
 
-/**
- * Password Form Handler (reuse from profile.js logic)
- */
 function initPasswordForm() {
   const form = document.getElementById("passwordForm");
   if (!form) return;
@@ -194,9 +178,6 @@ function initPasswordForm() {
   });
 }
 
-/**
- * Inventory Filter
- */
 function initInventoryFilter() {
   window.filterInventory = function (bloodType) {
     const rows = document.querySelectorAll("#inventoryTableBody tr");
@@ -210,9 +191,6 @@ function initInventoryFilter() {
   };
 }
 
-/**
- * Fulfill Blood Request (Hospital Admin)
- */
 window.fulfillBloodRequest = async function (requestId) {
   if (
     !confirm(
@@ -251,7 +229,6 @@ window.fulfillBloodRequest = async function (requestId) {
   }
 };
 
-// CSS for spin animation (if not already added)
 if (!document.querySelector("#hospital-spin-style")) {
   const style = document.createElement("style");
   style.id = "hospital-spin-style";
@@ -288,12 +265,10 @@ window.viewMessage = function (subject, sender, date, content, senderId) {
 };
 
 window.openReplyModal = function () {
-  // Close View Modal first
   const viewEl = document.getElementById("viewMessageModal");
   const viewModal = bootstrap.Modal.getInstance(viewEl);
   if (viewModal) viewModal.hide();
 
-  // Open Reply Modal
   const replyEl = document.getElementById("replyModal");
   if (replyEl) {
     document.getElementById("reply_receiver_id").value = currentMessageSenderId;

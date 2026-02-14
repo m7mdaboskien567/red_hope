@@ -1,4 +1,4 @@
-/* Reset */
+
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +6,7 @@
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
 
-/* Base */
+
 body {
   background: var(--bg-body);
   color: var(--text-primary);
@@ -14,7 +14,7 @@ body {
   line-height: 1.8;
 }
 
-/* Main container */
+
 .container {
   max-width: 900px;
   margin: 70px auto;
@@ -25,21 +25,21 @@ body {
   border-top: 6px solid var(--color-medium);
 }
 
-/* Main title */
+
 h1 {
   color: var(--color-medium);
   font-size: 38px;
   margin-bottom: 8px;
 }
 
-/* Updated date */
+
 .updated {
   font-size: 14px;
   color: #8e0000;
   margin-bottom: 30px;
 }
 
-/* Section titles */
+
 h2 {
   margin-top: 35px;
   margin-bottom: 12px;
@@ -60,13 +60,13 @@ h2::before {
   border-radius: 4px;
 }
 
-/* Text */
+
 p {
   font-size: 16px;
   margin-bottom: 16px;
 }
 
-/* Lists */
+
 ul {
   margin: 12px 0 22px 25px;
 }
@@ -75,7 +75,7 @@ li {
   margin-bottom: 10px;
 }
 
-/* Links */
+
 a {
   color: #c62828;
   font-weight: 500;
@@ -87,7 +87,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Highlight boxes (optional use later) */
+
 .notice {
   background: var(--bg-alt);
   border-left: 5px solid var(--color-medium);
@@ -96,7 +96,7 @@ a:hover {
   margin: 25px 0;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .container {
     margin: 35px 15px;

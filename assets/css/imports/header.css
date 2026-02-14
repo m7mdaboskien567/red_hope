@@ -8,11 +8,11 @@ header {
   align-items: center;
   flex-direction: row;
   justify-content: center;
-  /* background: var(--glass-bg); */
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--glass-shadow);
-  /* border-bottom: 1px solid var(--glass-border); */
+
   transition: all var(--transition-smooth);
   z-index: 99999;
 }
@@ -651,4 +651,96 @@ span#settings i {
   background: var(--color-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(8, 131, 149, 0.4);
+}
+
+
+
+@media (max-width: 992px) {
+  header {
+    height: 80px;
+  }
+
+  .logoNav h1 {
+    font-size: 2.2rem;
+  }
+
+  nav {
+    padding: 0 20px;
+  }
+
+  .menu {
+    width: 100%; 
+    padding: 60px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    height: 70px;
+  }
+
+  .logoNav h1 {
+    font-size: 1.8rem;
+  }
+
+  
+  #authNav span p {
+    display: none; 
+  }
+
+  #authNav span p i {
+    display: block !important; 
+  }
+
+  .btnNav span {
+    width: auto !important;
+    padding: 0 15px;
+    height: 40px;
+  }
+
+  #menuBtn {
+    padding: 0 20px !important;
+  }
+
+  #menuBtn p {
+    font-size: 0.8rem !important;
+  }
+
+  .menu-head h2 {
+    font-size: 2.5rem;
+  }
+
+  .menu-items li {
+    font-size: 1.8rem;
+    padding: 15px 20px;
+  }
+
+  
+  .modal-dialog-centered {
+    min-width: 95% !important;
+    margin: 10px auto;
+  }
+
+  .modal-body {
+    padding: 25px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoNav h1 {
+    font-size: 1.5rem;
+  }
+
+  nav {
+    padding: 0 10px;
+    gap: 10px;
+  }
+
+  #authNav {
+    gap: 5px !important;
+  }
+
+  .btnNav span {
+    margin: 4px;
+  }
 }

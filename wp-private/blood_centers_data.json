@@ -1,0 +1,119 @@
+[
+    {
+        "center_id": 1,
+        "name": "Cairo National Blood Bank",
+        "address": "5 El-Kasr Al-Ainy St, Garden City",
+        "city": "Cairo",
+        "lat": 30.0371,
+        "lng": 31.2314,
+        "contact_number": "+20 2 27921234"
+    },
+    {
+        "center_id": 2,
+        "name": "Alexandria Blood Transfusion Center",
+        "address": "14 Mohamed Karim St, Al Attarin",
+        "city": "Alexandria",
+        "lat": 31.2001,
+        "lng": 29.9187,
+        "contact_number": "+20 3 4861234"
+    },
+    {
+        "center_id": 3,
+        "name": "Ain Shams University Blood Bank",
+        "address": "Ain Shams University Hospital, Abbassia",
+        "city": "Cairo",
+        "lat": 30.0847,
+        "lng": 31.2849,
+        "contact_number": "+20 2 26834567"
+    },
+    {
+        "center_id": 4,
+        "name": "Mansoura Blood Center",
+        "address": "Mansoura University Hospital, El-Gomhouria St",
+        "city": "Mansoura",
+        "lat": 31.0409,
+        "lng": 31.3785,
+        "contact_number": "+20 50 2234567"
+    },
+    {
+        "center_id": 5,
+        "name": "Assiut Regional Blood Bank",
+        "address": "Assiut University Hospital, University Ave",
+        "city": "Assiut",
+        "lat": 27.1809,
+        "lng": 31.1837,
+        "contact_number": "+20 88 2312345"
+    },
+    {
+        "center_id": 6,
+        "name": "Tanta Blood Donation Center",
+        "address": "El-Galaa St, Downtown Tanta",
+        "city": "Tanta",
+        "lat": 30.7865,
+        "lng": 31.0004,
+        "contact_number": "+20 40 3345678"
+    },
+    {
+        "center_id": 7,
+        "name": "Luxor Blood Services Center",
+        "address": "Luxor International Hospital, Corniche El-Nil",
+        "city": "Luxor",
+        "lat": 25.6872,
+        "lng": 32.6396,
+        "contact_number": "+20 95 2234567"
+    },
+    {
+        "center_id": 8,
+        "name": "Port Said Blood Bank",
+        "address": "Al-Nasr Hospital, 23 July St",
+        "city": "Port Said",
+        "lat": 31.2565,
+        "lng": 32.2841,
+        "contact_number": "+20 66 3245678"
+    },
+    {
+        "center_id": 9,
+        "name": "Suez Blood Transfusion Center",
+        "address": "Suez General Hospital, Al-Salam District",
+        "city": "Suez",
+        "lat": 29.9668,
+        "lng": 32.5498,
+        "contact_number": "+20 62 3123456"
+    },
+    {
+        "center_id": 10,
+        "name": "Zagazig University Blood Bank",
+        "address": "Zagazig University Hospital, Sharkia",
+        "city": "Zagazig",
+        "lat": 30.5877,
+        "lng": 31.502,
+        "contact_number": "+20 55 2345678"
+    },
+    {
+        "center_id": 11,
+        "name": "Ismailia Blood Center",
+        "address": "Ismailia General Hospital, Sultan Hussein St",
+        "city": "Ismailia",
+        "lat": 30.5965,
+        "lng": 32.2715,
+        "contact_number": "+20 64 3456789"
+    },
+    {
+        "center_id": 12,
+        "name": "Giza Blood Donation Center",
+        "address": "Giza General Hospital, Al-Haram St",
+        "city": "Giza",
+        "lat": 30.0131,
+        "lng": 31.2089,
+        "contact_number": "+20 2 35678901"
+    },
+    {
+        "center_id": 13,
+        "name": "KFS",
+        "address": "KFS",
+        "city": "KFS",
+        "lat": 31.1087769,
+        "lng": 30.9355687,
+        "contact_number": "0111124512"
+    }
+]

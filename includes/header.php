@@ -6,7 +6,6 @@ $is_logged_in = isset($_SESSION['user_id']);
 $user_role = $_SESSION['role'] ?? '';
 ?>
 <script>
-    // Global Session Indicator for Auth Gate
     window.PHP_SESSION_ACTIVE = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
 </script>
 <header>

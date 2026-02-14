@@ -247,7 +247,8 @@ body {
   display: none;
 }
 
-.btn-login, .btn-success {
+.btn-login,
+.btn-success {
   width: 100%;
   padding: 18px;
   background: var(--gradient-primary);
@@ -265,7 +266,8 @@ body {
   box-shadow: 0 10px 25px rgba(230, 57, 70, 0.3);
 }
 
-.btn-login:hover, .btn-success:hover {
+.btn-login:hover,
+.btn-success:hover {
   transform: translateY(-4px);
   box-shadow: 0 15px 35px rgba(230, 57, 70, 0.4);
 }
@@ -353,7 +355,7 @@ body {
     flex-direction: column;
   }
   .login-left {
-    min-height: 400px;
+    min-height: 350px;
     padding: 40px 20px;
   }
   .welcome-text {
@@ -362,9 +364,40 @@ body {
   .logo-section h1 {
     font-size: 2.5rem;
   }
+  .login-content {
+    text-align: center;
+  }
+  .logo-section {
+    justify-content: center;
+  }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
+  .login-left {
+    min-height: 250px;
+  }
+  .welcome-text {
+    font-size: 1.8rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .login-right {
+    padding: 40px 20px;
+  }
+  .form-container h3 {
+    font-size: 2rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-left {
+    display: none; 
+  }
+  .login-right {
+    min-height: 100vh;
+  }
   .social-login {
     grid-template-columns: 1fr;
   }

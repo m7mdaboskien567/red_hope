@@ -19,13 +19,13 @@ if (!$sessionId || !$newTitle) {
     exit();
 }
 
-// Limit title length
+
 $newTitle = substr($newTitle, 0, 60);
 
 $pdo = getDB();
 
 try {
-    // Verify ownership
+    
     $check = $pdo->prepare("SELECT user_id FROM ai_chat_sessions WHERE session_id = ?");
     $check->execute([$sessionId]);
     $session = $check->fetch();

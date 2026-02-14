@@ -1,16 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Get data passed from PHP
     const data = window.dashboardData || {
         users: { Donor: 0, HospitalAdmin: 0, SuperAdmin: 0 },
         hospitals: { verified: 0, pending: 0 },
-        donations: { history: [] } // Mock data structure for now
+        donations: { history: [] }
     };
 
-    // Global Chart Defaults
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     Chart.defaults.color = '#6c757d';
     
-    // 1. User Distribution Chart (Doughnut)
     const userCtx = document.getElementById('userDistributionChart');
     if (userCtx) {
         new Chart(userCtx, {
@@ -20,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: [data.users.Donor, data.users.HospitalAdmin, data.users.SuperAdmin],
                     backgroundColor: [
-                        '#6f42c1', // Purple
-                        '#007bff', // Blue
-                        '#28a745'  // Green
+                        '#6f42c1',
+                        '#007bff',
+                        '#28a745'
                     ],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -54,11 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Donation Activity Chart (Area Line)
     const donationCtx = document.getElementById('donationActivityChart');
     if (donationCtx) {
-        // Mock data for trends (since we only have total count in basic stats)
-        // In a real app, you'd fetch monthly data via API
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
         const mockData = [12, 19, 15, 25, 22, 30]; 
 
@@ -120,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. Hospital Status Chart (Bar)
     const hospitalCtx = document.getElementById('hospitalStatusChart');
     if (hospitalCtx) {
         new Chart(hospitalCtx, {
@@ -131,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: 'Hospitals',
                     data: [data.hospitals.verified, data.hospitals.pending],
                     backgroundColor: [
-                        '#38ef7d', // Green
-                        '#f09819'  // Orange
+                        '#38ef7d',
+                        '#f09819'
                     ],
                     borderRadius: 6,
                     barThickness: 40

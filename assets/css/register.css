@@ -20,7 +20,6 @@ body {
   overflow: hidden;
 }
 
-/* ==================== LEFT SIDE (DECORATION) ==================== */
 .register-left {
   flex: 0.8;
   background: var(--gradient-primary);
@@ -165,7 +164,6 @@ body {
   line-height: 1.6;
 }
 
-/* ==================== PROGRESS STEPS ==================== */
 .progress-steps {
   display: flex;
   flex-direction: column;
@@ -239,7 +237,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ==================== RIGHT SIDE (FORM) ==================== */
 .register-right {
   flex: 1.2;
   display: flex;
@@ -306,7 +303,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* User Type Selection */
 .user-type-selection {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -396,7 +392,6 @@ body {
   transform: scale(1);
 }
 
-/* Forms */
 .form-group {
   margin-bottom: 25px;
 }
@@ -436,7 +431,6 @@ body {
   box-shadow: 0 0 0 5px rgba(230, 57, 70, 0.1);
 }
 
-/* Gender Selection */
 .gender-selection {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -478,7 +472,6 @@ body {
   box-shadow: 0 5px 15px rgba(230, 57, 70, 0.2);
 }
 
-/* Blood Type */
 .blood-type-selection {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -520,7 +513,6 @@ body {
   box-shadow: 0 8px 20px rgba(230, 57, 70, 0.25);
 }
 
-/* Password Strength */
 .password-strength {
   margin-top: 12px;
   height: 6px;
@@ -564,7 +556,6 @@ body {
   color: var(--color-primary);
 }
 
-/* Buttons */
 .form-navigation {
   display: flex;
   gap: 20px;
@@ -624,7 +615,6 @@ body {
   text-decoration: underline;
 }
 
-/* Responsiveness */
 @media (max-width: 1200px) {
   .register-left {
     flex: 0.8;
@@ -639,12 +629,19 @@ body {
     flex-direction: column;
   }
   .register-left {
-    min-height: 400px;
+    min-height: 300px;
     padding: 40px 20px;
+  }
+  .register-content {
+    text-align: center;
+  }
+  .logo-section {
+    justify-content: center;
   }
   .progress-steps {
     flex-direction: row;
-    gap: 10px;
+    justify-content: center;
+    gap: 15px;
     margin-top: 30px;
   }
   .progress-steps::before {
@@ -652,6 +649,8 @@ body {
   }
   .step {
     opacity: 0.7;
+    flex-direction: column;
+    gap: 8px;
   }
   .step.active {
     transform: translateY(-5px);
@@ -667,13 +666,32 @@ body {
   }
   .subtitle {
     margin-bottom: 20px;
+    display: none;
   }
   .user-type-selection {
     grid-template-columns: 1fr;
   }
 }
 
+@media (max-width: 768px) {
+  .register-right {
+    padding: 40px 20px;
+  }
+  .form-step h3 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  .step-description {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+}
+
 @media (max-width: 576px) {
+  .register-left {
+    display: none;
+  }
   .form-navigation {
     flex-direction: column;
   }
@@ -685,7 +703,6 @@ body {
   }
 }
 
-/* Validation States */
 .form-control.error {
   border-color: #e74c3c;
   animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;

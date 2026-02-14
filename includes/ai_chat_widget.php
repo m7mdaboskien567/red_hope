@@ -5,7 +5,6 @@
             <span>HopeAI Online</span>
         </div>
         <div class="ai-header-actions">
-            <!-- Chat History Dropdown -->
             <div class="ai-history-dropdown">
                 <button class="ai-history-btn" title="Chat History">
                     <i class="bi bi-clock-history"></i>
@@ -18,7 +17,6 @@
                         </button>
                     </div>
                     <div class="ai-history-list" id="aiHistoryList">
-                        <!-- Loaded via JS -->
                         <div class="p-3 text-center text-muted small">Loading history...</div>
                     </div>
                 </div>

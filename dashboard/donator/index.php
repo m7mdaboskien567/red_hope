@@ -2,7 +2,7 @@
 session_start();
 include_once __DIR__ . '/../../database/config.php';
 
-// Auth Check
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Donor') {
     header("Location: /redhope/login.php");
     exit();
@@ -20,7 +20,7 @@ $all_requests = [];
 $blood_centers = [];
 
 try {
-    // 1. Get User Name
+
     $stmt = $pdo->prepare("SELECT first_name, last_name FROM users WHERE user_id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,12 +28,12 @@ try {
         $user_name = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
     }
 
-    // 2. Get Donor Profile (Blood Type, Weight, etc.)
+
     $stmt = $pdo->prepare("SELECT * FROM donor_profiles WHERE donor_id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $donor_profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // 3. Get Total Donations & Last Donation Date
+
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count, MAX(donated_at) as last_date 
         FROM donations 
@@ -44,16 +44,16 @@ try {
     $total_donations = $stats['count'] ?? 0;
     $last_donation_date = $stats['last_date'];
 
-    // 4. Calculate Eligibility
+
     if ($last_donation_date) {
         $last_date_obj = new DateTime($last_donation_date);
         $today = new DateTime();
         $interval = $last_date_obj->diff($today);
         $days_passed = $interval->days;
-        $days_until_eligible = max(0, 56 - $days_passed); // Assuming 56 days gap
+        $days_until_eligible = max(0, 56 - $days_passed);
     }
 
-    // 5. Get My Appointments (Upcoming)
+
     $stmt = $pdo->prepare("
         SELECT a.*, c.name as center_name, c.city 
         FROM appointments a 
@@ -64,7 +64,7 @@ try {
     $stmt->execute([$donor_profile['donor_id'] ?? 0]);
     $my_appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 6. Get Donation History (All - Centers or Hospitals)
+
     $stmt = $pdo->prepare("
         SELECT d.*, 
                COALESCE(c.name, h.name) as location_name 
@@ -77,7 +77,7 @@ try {
     $stmt->execute([$donor_profile['donor_id'] ?? 0]);
     $donation_history = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 7. Get All Open Requests Matching Donor's Blood Type
+
     $donor_blood_type = $donor_profile['blood_type'] ?? null;
     $all_requests = [];
 
@@ -100,14 +100,14 @@ try {
         $all_requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // 8. Get Blood Centers (For Donate Form)
+
     $stmt = $pdo->query("SELECT * FROM blood_centers ORDER BY city, name");
     $blood_centers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Reuse $all_requests for the widget (limit 3) if needed, or keep separate query
+
     $recent_activity = array_slice($all_requests, 0, 3);
 
-    // 9. Fetch Messages
+
     $stmt = $pdo->prepare("
         SELECT m.*, CONCAT(u.first_name, ' ', u.last_name) as sender_name 
         FROM messages m 
@@ -119,7 +119,7 @@ try {
     $all_messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // Handle error
+
 }
 ?>
 <!DOCTYPE html>
@@ -186,7 +186,7 @@ try {
                     </div>
                 </div>
 
-                <!-- Donation History Chart -->
+
                 <div class="chart-card" style="margin-bottom: 2rem;">
                     <h3 style="font-size: 1.1rem; color: #2d3436; margin-bottom: 1rem;">My Donation Journey</h3>
                     <div style="height: 300px;">
@@ -247,6 +247,12 @@ try {
                     </span>
                 </div>
                 <div>
+                    <span onclick="loadSection('maps')">
+                        <i class="bi bi-map"></i>
+                        <p>Maps</p>
+                    </span>
+                </div>
+                <div>
                     <span onclick="loadSection('messages')">
                         <i class="bi bi-envelope"></i>
                         <p>Messages</p>
@@ -262,12 +268,12 @@ try {
             <div class="view-nav">
                 <section id="contentFrameView">
 
-                    <!-- AI Section -->
+
                     <div id="ai-section" class="dashboard-section" style="display: none;">
                         <?php include __DIR__ . '/../../includes/ai_chat_widget.php'; ?>
                     </div>
 
-                    <!-- Donate Section -->
+
                     <div id="donate-section" class="dashboard-section" style="display: none;">
                         <div class="appointment-form-wrapper" style="margin: 0; box-shadow: none;">
                             <h2>Schedule a Donation</h2>
@@ -310,7 +316,6 @@ try {
                         </div>
                     </div>
 
-                    <!-- Requests Section -->
                     <div id="requests-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Urgent Blood Requests</h2>
@@ -322,7 +327,8 @@ try {
                                             <div class="activity-details flex-grow-1">
                                                 <h4>Request at <?php echo htmlspecialchars($req['hospital_name']); ?></h4>
                                                 <p><?php echo htmlspecialchars($req['city']); ?> •
-                                                    <?php echo date('M d, Y', strtotime($req['created_at'])); ?></p>
+                                                    <?php echo date('M d, Y', strtotime($req['created_at'])); ?>
+                                                </p>
                                                 <p><strong>Needed:</strong> <?php echo $req['blood_type_required']; ?>
                                                     (<?php echo $req['units_requested']; ?> units)</p>
                                             </div>
@@ -357,7 +363,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Appointments Section -->
+
                     <div id="appointments-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>My Appointments</h2>
@@ -400,7 +406,7 @@ try {
                                     <?php endforeach; ?>
                                 </div>
 
-                                <!-- Reschedule Modal -->
+
                                 <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
@@ -446,7 +452,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- History Section -->
+
                     <div id="history-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
@@ -503,7 +509,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Messages Section -->
+
                     <div id="messages-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Messages</h2>
@@ -550,12 +556,28 @@ try {
                     </div>
 
                 </section>
-            </div>
+
+
+                <div id="maps-section" class="dashboard-section" style="display: none;">
+                    <div class="content-wrapper">
+                        <h2>Blood Donation Centers</h2>
+                        <p class="text-secondary mb-4">Find the nearest center to you. Click on a marker to get
+                            directions.</p>
+                        <link rel="stylesheet" href="/redhope/assets/css/map.css">
+                        <div class="map-container"
+                            style="height: 600px; border-radius: 16px; overflow: hidden; position: relative; border: 1px solid var(--border-subtle);">
+                            <div id="dashboardMap" style="width: 100%; height: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
 
         </section>
+        </div>
+
+    </section>
     </section>
 
-    <!-- Hospital Info Modal -->
+
     <div class="modal fade" id="hospitalInfoModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content profile-form-wrapper" style="margin: 0; box-shadow: none;">
@@ -591,7 +613,7 @@ try {
         </div>
     </div>
 
-    <!-- View Message Modal -->
+
     <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -617,53 +639,59 @@ try {
     </div>
     <?php include __DIR__ . "/../../includes/footer.php"; ?>
     <script src="/redhope/assets/js/profile.js"></script>
+    <script src="/redhope/assets/js/dashboard_map.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Show default section or section from URL
+
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab') || 'donate';
             loadSection(tab);
         });
 
         function loadSection(section) {
-            // 1. Update Buttons Active State
+
             document.querySelectorAll('.nav-links-btns span').forEach(el => el.classList.remove('active'));
 
-            // Find button by onclick attribute (since we don't have IDs on them)
+
             const activeBtn = document.querySelector(`.nav-links-btns span[onclick="loadSection('${section}')"]`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            // 2. Hide All Sections
+
             document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
 
-            // 3. Show Target Section
+
             const target = document.getElementById(section + '-section');
             if (target) {
                 target.style.display = 'block';
-                // Animation effect
+
                 target.style.opacity = 0;
                 setTimeout(() => {
                     target.style.transition = 'opacity 0.3s ease';
                     target.style.opacity = 1;
+
+                    document.dispatchEvent(new CustomEvent('sectionLoaded', { detail: { section: section } }));
                 }, 10);
             }
         }
     </script>
     <script>
-        // Donation History Chart
+
         <?php
-        // Prepare data: reverse to show oldest to newest
+
         $chart_dates = [];
         $chart_volumes = [];
         $history_reversed = array_reverse($donation_history);
 
         foreach ($history_reversed as $donation) {
-            if ($donation['status'] === 'Approved' || $donation['status'] === 'Dispatched') {
+
+            if (in_array($donation['status'], ['Approved', 'Dispatched', 'Pending Lab'])) {
                 $chart_dates[] = date('M Y', strtotime($donation['donated_at']));
                 $chart_volumes[] = (int) $donation['volume_ml'];
             }
         }
         ?>
+        console.log("Chart Data:", <?php echo json_encode($donation_history); ?>);
+        console.log("Chart Dates:", <?php echo json_encode($chart_dates); ?>);
 
         document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('donationChart');
@@ -708,7 +736,7 @@ try {
                     }
                 });
             } else if (ctx) {
-                // Empty state for chart
+
                 ctx.parentNode.innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#b2bec3;">No confirmed donations yet to display.</div>';
             }
         });

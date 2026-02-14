@@ -33,7 +33,7 @@ if (empty($name) || empty($address) || empty($city) || empty($contact_number)) {
 }
 
 try {
-    // Check if user already has a hospital
+    
     $stmt = $pdo->prepare("SELECT * FROM hospitals WHERE admin_id = ?");
     $stmt->execute([$user_id]);
     $existing = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -43,7 +43,7 @@ try {
         exit();
     }
 
-    // Insert new hospital (is_verified = FALSE by default, waiting for admin approval)
+    
     $stmt = $pdo->prepare("
         INSERT INTO hospitals (name, address, city, contact_number, email, admin_id, is_verified, created_at)
         VALUES (?, ?, ?, ?, ?, ?, FALSE, NOW())

@@ -1,5 +1,3 @@
-/* Admin Dashboard Premium Styles */
-
 :root {
   --admin-primary: #6f42c1;
   --admin-secondary: #007bff;
@@ -11,7 +9,7 @@
   --glass-bg: rgba(255, 255, 255, 0.95);
   --glass-border: rgba(255, 255, 255, 0.2);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08); /* Softer, more spread out shadow */
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
   --gradient-users: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   --gradient-hospitals: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -29,7 +27,6 @@ body {
     sans-serif;
 }
 
-/* Dashboard Container & Grid */
 .dashboard-content {
   padding: 30px;
 }
@@ -40,6 +37,7 @@ body {
   margin-bottom: 0.5rem;
   background: linear-gradient(90deg, #2c3e50, #4ca1af);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -62,7 +60,6 @@ body {
   margin-bottom: 30px;
 }
 
-/* Cards */
 .card,
 .stat-card,
 .chart-card {
@@ -90,7 +87,6 @@ body {
   overflow: hidden;
 }
 
-/* Icon Styles */
 .stat-icon {
   width: 60px;
   height: 60px;
@@ -129,7 +125,6 @@ body {
   font-weight: 500;
 }
 
-/* Charts */
 .chart-container {
   position: relative;
   height: 300px;
@@ -150,9 +145,8 @@ body {
   color: var(--admin-text);
 }
 
-/* Tables */
 .recent-activity {
-  margin-top: 0; /* Align with grid */
+  margin-top: 0;
 }
 
 .donations-table-wrapper {
@@ -198,7 +192,6 @@ body {
   color: #28a745;
 }
 
-/* Buttons & Interactive Elements */
 .btn-primary {
   background: var(--admin-primary);
   border: none;
@@ -215,14 +208,12 @@ body {
   box-shadow: 0 6px 16px rgba(111, 66, 193, 0.3);
 }
 
-/* Modals (Legacy support if any remains, but styled better) */
 .modal-content {
   border-radius: 16px;
   border: none;
   box-shadow: var(--shadow-lg);
 }
 
-/* Toast Notifications */
 .toast-container {
   bottom: 30px;
   right: 30px;
@@ -276,7 +267,6 @@ body {
   color: #333;
 }
 
-/* Forms in Modal */
 .modal-form .form-group {
   margin-bottom: 20px;
 }
@@ -323,7 +313,6 @@ body {
   border-top: 1px solid var(--admin-border);
 }
 
-/* Buttons */
 .btn-primary {
   background-color: var(--admin-primary);
   border-color: var(--admin-primary);
@@ -391,7 +380,6 @@ body {
   color: white;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -412,7 +400,6 @@ body {
   }
 }
 
-/* Toast Notifications */
 .toast-container {
   position: fixed;
   bottom: 20px;
@@ -458,5 +445,82 @@ body {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+
+
+@media (max-width: 992px) {
+  .dashboard-content {
+    padding: 20px;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 15px;
+  }
+
+  .content-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr; 
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+
+  .stat-info h3 {
+    font-size: 1.4rem;
+  }
+
+  .donations-table-wrapper {
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  .donations-table th,
+  .donations-table td {
+    padding: 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+    margin: 10px auto;
+  }
+
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
   }
 }

@@ -14,7 +14,7 @@ if (isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - RedHope</title>
 <?php include __DIR__ . '/includes/meta.php'; ?>
-    <link rel="stylesheet" href="/redhope/assets/css/login-style.css">
+    <link rel="stylesheet" href="assets/css/login-style.css">
 </head>
 <body>
 <?php include __DIR__ . '/includes/loader.php'; ?>

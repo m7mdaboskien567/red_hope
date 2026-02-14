@@ -1,6 +1,5 @@
-// --- Global JWT Auth Gate ---
+
 (function () {
-  // Determine site root (handles localhost/redhope/ vs root)
   const pathParts = window.location.pathname.split("/");
   const siteRoot = pathParts.includes("redhope") ? "/redhope/" : "/";
 
@@ -16,7 +15,6 @@
     path: currentPath,
   });
 
-  // Case 1: No active session but token exists -> Restore session
   if (!window.PHP_SESSION_ACTIVE && storedToken) {
     console.log("🔄 Attempting to restore session from JWT...");
 
@@ -47,14 +45,11 @@
         console.error("⚠️ Auth Gate Fetch Error:", err);
       });
   }
-
-  // Case 2: No active session and NO token on a protected path -> Redirect to login
   else if (!window.PHP_SESSION_ACTIVE && !storedToken && isProtectedPath) {
     console.warn("🚫 Access denied. No session or token found.");
     window.location.href = siteRoot + "login.php?error=Authentication+Required";
   }
 
-  // Case 3: ACTIVE session but MISSING token -> Sync token to localStorage
   else if (window.PHP_SESSION_ACTIVE && !storedToken) {
     console.log("🔄 Session active but token missing. Syncing...");
     fetch(siteRoot + "apis/get_current_token.php")
@@ -69,19 +64,15 @@
   }
 })();
 
-// Global Logout Function
 window.logoutUser = function () {
   localStorage.removeItem("redhope_jwt");
   const pathParts = window.location.pathname.split("/");
   const siteRoot = pathParts.includes("redhope") ? "/redhope/" : "/";
   window.location.href = siteRoot + "apis/logout.php";
 };
-// ----------------------------
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Synchronize AOS with the Custom Loader
-  // We wait for the 'pageLoaded' event from loader.php to initialize AOS
-  // This ensures elements don't animate while the loader is still visible
   document.addEventListener("pageLoaded", () => {
     setTimeout(() => {
       AOS.init({
@@ -94,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 600);
   });
 
-  // 2. Go to Top Button Logic
   const scrollTopBtn = document.getElementById("scrollTopBtn");
 
   if (scrollTopBtn) {
@@ -115,20 +105,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/**
- * Global Alert/Notification System using Bootstrap Toasts
- * @param {string} message - The message to display
- * @param {string} type - 'success', 'error', 'warning', 'info'
- */
+const originalAlert = window.alert;
 window.showAlert = function (message, type = "success") {
   const container = document.getElementById("alertContainer");
   if (!container) {
     console.warn("Alert container not found! Falling back to standard alert.");
-    alert(message);
+    originalAlert(message);
     return;
   }
 
-  // Map 'error' to 'danger' for Bootstrap styling
   const bsType = type === "error" ? "danger" : type;
   const icon =
     {
@@ -155,17 +140,16 @@ window.showAlert = function (message, type = "success") {
   const toastElement = document.getElementById(toastId);
   const toast = new bootstrap.Toast(toastElement, { delay: 10000 });
   toast.show();
-
-  // Remove from DOM after hide
   toastElement.addEventListener("hidden.bs.toast", () => {
     toastElement.remove();
   });
 };
 
-/**
- * Auto-show alerts based on URL parameters
- * Example: ?msg=Success&type=success or ?error=Some+Error
- */
+
+window.alert = function (message) {
+  showAlert(message, "warning"); 
+};
+
 window.addEventListener("load", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const msg = urlParams.get("msg");
@@ -183,9 +167,6 @@ window.addEventListener("load", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Synchronize AOS with the Custom Loader
-  // We wait for the 'pageLoaded' event from loader.php to initialize AOS
-  // This ensures elements don't animate while the loader is still visible
   document.addEventListener("pageLoaded", () => {
     setTimeout(() => {
       AOS.init({
@@ -198,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 600);
   });
 
-  // 2. Go to Top Button Logic
   const scrollTopBtn = document.getElementById("scrollTopBtn");
 
   if (scrollTopBtn) {
@@ -233,22 +213,19 @@ function changeTitle() {
 
 changeTitle();
 
-// Theme Toggle Logic
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggle");
   const icon = themeToggleBtn?.querySelector("i");
   const html = document.documentElement;
 
-  // Check LocalStorage
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme) {
     html.setAttribute("data-theme", savedTheme);
     updateIcon(savedTheme);
   } else {
-    // System preference check could go here
+    
   }
 
-  // Toggle Function
   window.toggleTheme = function () {
     const currentTheme = html.getAttribute("data-theme");
     const newTheme = currentTheme === "dark" ? "light" : "dark";

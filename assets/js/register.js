@@ -8,7 +8,6 @@ const nextBtn = document.getElementById("nextBtn");
 const submitBtn = document.getElementById("submitBtn");
 const registerForm = document.getElementById("registerForm");
 
-// Form data storage
 const formData = {
   userType: "",
   firstName: "",
@@ -23,13 +22,11 @@ const formData = {
   terms: false,
 };
 
-// Initialize
 document.addEventListener("DOMContentLoaded", () => {
   showStep(1);
   updateButtons();
 });
 
-// Show specific step
 function showStep(step) {
   formSteps.forEach((formStep, index) => {
     if (index + 1 === step) {
@@ -56,7 +53,6 @@ function showStep(step) {
   updateBloodTypeVisibility();
 }
 
-// Update button visibility
 function updateButtons() {
   if (currentStep === 1) {
     prevBtn.style.display = "none";
@@ -73,7 +69,6 @@ function updateButtons() {
   }
 }
 
-// Validate current step
 function validateStep(step) {
   const currentFormStep = formSteps[step - 1];
   const inputs = currentFormStep.querySelectorAll(
@@ -109,7 +104,6 @@ function validateStep(step) {
         isValid = false;
         input.classList.add("error");
       } else {
-        // Additional validation
         if (input.type === "email") {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(input.value)) {
@@ -152,7 +146,6 @@ function validateStep(step) {
   return isValid;
 }
 
-// Next button
 nextBtn.addEventListener("click", () => {
   if (validateStep(currentStep)) {
     saveStepData(currentStep);
@@ -164,14 +157,12 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// Previous button
 prevBtn.addEventListener("click", () => {
   if (currentStep > 1) {
     showStep(currentStep - 1);
   }
 });
 
-// Save step data
 function saveStepData(step) {
   switch (step) {
     case 1:
@@ -204,19 +195,16 @@ function saveStepData(step) {
   }
 }
 
-// Form submission
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   if (validateStep(currentStep)) {
     saveStepData(currentStep);
 
-    // Create loading state
     submitBtn.innerHTML =
       '<span class="spinner-border spinner-border-sm"></span> Creating Account...';
     submitBtn.disabled = true;
 
-    // Real API call
     const fetchFormData = new FormData();
     for (const key in formData) {
       fetchFormData.append(key, formData[key]);
@@ -321,7 +309,6 @@ passwordInput.addEventListener("input", () => {
 
 const dobInput = document.getElementById("dob");
 
-// Set max date to 18 years ago
 const today = new Date();
 const maxDate = new Date(
   today.getFullYear() - 18,
@@ -330,7 +317,6 @@ const maxDate = new Date(
 );
 dobInput.max = maxDate.toISOString().split("T")[0];
 
-// Set min date to 100 years ago
 const minDate = new Date(
   today.getFullYear() - 100,
   today.getMonth(),
@@ -339,13 +325,11 @@ const minDate = new Date(
 dobInput.min = minDate.toISOString().split("T")[0];
 
 document.addEventListener("keydown", (e) => {
-  // Enter to go next (except on last step)
   if (e.key === "Enter" && currentStep < totalSteps) {
     e.preventDefault();
     nextBtn.click();
   }
 
-  // Arrow keys for navigation
   if (
     e.key === "ArrowRight" &&
     currentStep < totalSteps &&
@@ -401,7 +385,6 @@ radioGroups.forEach((groupName) => {
   const radios = document.querySelectorAll(`input[name="${groupName}"]`);
   radios.forEach((radio) => {
     radio.addEventListener("change", () => {
-      // Auto-advance after short delay for better UX
       setTimeout(() => {
         if (currentStep < totalSteps) {
           nextBtn.click();

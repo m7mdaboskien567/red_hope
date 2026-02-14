@@ -1,13 +1,6 @@
 <?php
-/**
- * Simple JWT Helper for RedHope
- * 
- * Note: This is a manual implementation for environment without Composer.
- * For production, a library like lcobucci/jwt or firebase/php-jwt is recommended.
- */
-
 class JWTHelper {
-    private static $secret_key = "redhope_secure_secret_777"; // In production, move to .env
+    private static $secret_key = "redhope_secure_secret_777";
     private static $algo = 'HS256';
 
     public static function generate($payload) {

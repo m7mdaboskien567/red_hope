@@ -1,5 +1,3 @@
--- Add admin_id column to hospitals table if it doesn't exist
--- Run this on existing databases to support hospital admin onboarding
 ALTER TABLE hospitals
 ADD COLUMN admin_id INT NULL
 AFTER hospital_id;

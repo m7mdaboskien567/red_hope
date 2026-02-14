@@ -1,0 +1,288 @@
+
+
+.map-section {
+  padding: 6rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-section .section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(230, 57, 70, 0.08);
+  border: 1px solid rgba(230, 57, 70, 0.15);
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.map-section .section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.map-section .section-description {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+
+.map-container {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 60px rgba(230, 57, 70, 0.04);
+}
+
+.map-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    #ff6b81,
+    var(--color-primary)
+  );
+  background-size: 200% 100%;
+  animation: shimmerBar 3s ease-in-out infinite;
+  z-index: 1000;
+}
+
+@keyframes shimmerBar {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+#bloodCentersMap {
+  width: 100%;
+  height: 500px;
+  background: var(--bg-alt);
+  z-index: 1;
+}
+
+
+.map-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.map-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.map-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-primary);
+}
+
+.map-stat i {
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.map-stat .stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.map-stat .stat-number {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #000;
+  line-height: 1;
+  opacity: 1;
+  display: block;
+  -webkit-text-fill-color: unset;
+}
+
+.map-stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 240px;
+}
+
+.map-popup {
+  padding: 16px 18px;
+}
+
+.map-popup .popup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.map-popup .popup-header i {
+  font-size: 1.3rem;
+  color: #e63946;
+}
+
+.map-popup .popup-header h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.map-popup .popup-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.map-popup .popup-detail i {
+  font-size: 0.85rem;
+  color: #e63946;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.map-popup .popup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #e63946, #ff6b81);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.map-popup .popup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+
+.custom-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #e63946, #ff6b81);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+  border: 3px solid white;
+  animation: markerDrop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-marker i {
+  transform: rotate(45deg);
+  color: white;
+  font-size: 0.9rem;
+}
+
+@keyframes markerDrop {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) translateY(-20px) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-45deg) translateY(0) scale(1);
+  }
+}
+
+
+[data-theme="dark"] .leaflet-popup-content-wrapper {
+  background: #1a1a2e !important;
+}
+
+[data-theme="dark"] .map-popup .popup-header h4 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .map-popup .popup-detail {
+  color: #aaa;
+}
+
+[data-theme="dark"] .leaflet-popup-tip {
+  background: #1a1a2e !important;
+}
+
+
+@media (max-width: 768px) {
+  .map-section {
+    padding: 4rem 1rem;
+  }
+  #bloodCentersMap {
+    height: 350px;
+  }
+  .map-stats {
+    gap: 1rem;
+  }
+  .map-stat {
+    padding: 10px 16px;
+  }
+  .map-section .section-title {
+    font-size: 1.6rem;
+  }
+}

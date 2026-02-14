@@ -2,7 +2,7 @@
 session_start();
 include_once __DIR__ . '/../database/config.php';
 
-// Auth Check — Super Admin only
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Super Admin') {
     header("Location: /redhope/login.php");
     exit();
@@ -22,14 +22,21 @@ $all_inventory = [];
 $all_messages = [];
 $all_appointments = [];
 $recent_activity = [];
+$all_map_centers = [];
 
-// Chart data
+
+$mapJsonFile = __DIR__ . '/../wp-private/blood_centers_data.json';
+if (file_exists($mapJsonFile)) {
+    $all_map_centers = json_decode(file_get_contents($mapJsonFile), true) ?? [];
+}
+
+
 $blood_type_dist = [];
 $monthly_donations = [];
 $urgency_dist = [];
 
 try {
-    // 1. Get Admin Name
+    
     $stmt = $pdo->prepare("SELECT first_name, last_name FROM users WHERE user_id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -37,22 +44,22 @@ try {
         $user_name = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
     }
 
-    // 2. Platform Stats
+    
     $total_donors = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'Donor'")->fetchColumn();
     $total_hospitals = $pdo->query("SELECT COUNT(*) FROM hospitals")->fetchColumn();
     $total_donations = $pdo->query("SELECT COUNT(*) FROM donations WHERE status = 'Approved'")->fetchColumn();
     $open_requests = $pdo->query("SELECT COUNT(*) FROM blood_requests WHERE status = 'Open'")->fetchColumn();
 
-    // 3. All Users
+    
     $all_users = $pdo->query("SELECT user_id, first_name, last_name, email, phone, role, gender, date_of_birth, created_at FROM users ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. All Hospitals
+    
     $all_hospitals = $pdo->query("SELECT h.*, CONCAT(u.first_name, ' ', u.last_name) as admin_name FROM hospitals h LEFT JOIN users u ON h.admin_id = u.user_id ORDER BY h.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 5. All Blood Centers
+    
     $all_centers = $pdo->query("SELECT * FROM blood_centers ORDER BY city, name")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 6. All Blood Requests
+    
     $all_requests = $pdo->query("
         SELECT br.*, h.name as hospital_name, h.city 
         FROM blood_requests br 
@@ -66,7 +73,7 @@ try {
             br.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 7. All Donor Profiles
+    
     $all_donor_profiles = $pdo->query("
         SELECT dp.*, u.first_name, u.last_name, u.email 
         FROM donor_profiles dp 
@@ -74,7 +81,7 @@ try {
         ORDER BY u.first_name ASC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 8. All Blood Inventory
+    
     $all_inventory = $pdo->query("
         SELECT bi.*, 
                COALESCE(bc.name, 'Unknown') as center_name,
@@ -87,7 +94,7 @@ try {
         ORDER BY bi.expiry_date ASC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 9. All Messages
+    
     $all_messages = $pdo->query("
         SELECT m.*, 
                CONCAT(s.first_name, ' ', s.last_name) as sender_name,
@@ -98,7 +105,7 @@ try {
         ORDER BY m.sent_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 10. All Appointments
+    
     $all_appointments = $pdo->query("
         SELECT a.*, 
                CONCAT(u.first_name, ' ', u.last_name) as donor_name,
@@ -110,13 +117,13 @@ try {
         ORDER BY a.scheduled_time DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    // 11. Recent Activity
+    
     $recent_activity = $pdo->query("SELECT first_name, last_name, role, created_at FROM users ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
 
-    // Urgency distribution
+    
     $urgency_dist = $pdo->query("SELECT urgency_level, COUNT(*) as cnt FROM blood_requests GROUP BY urgency_level")->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch All Users for Compose Message Dropdown (Grouped by Role)
+    
     $all_users_grouped = $pdo->query("SELECT user_id, first_name, last_name, role FROM users WHERE role IN ('Hospital','Donor') ORDER BY role, first_name")->fetchAll(PDO::FETCH_ASSOC);
     $hospital_admins = [];
     $donors = [];
@@ -127,7 +134,7 @@ try {
             $donors[] = $u;
     }
 
-    // Valid donations for inventory dropdown
+    
     $valid_donations = $pdo->query("
         SELECT d.donation_id, CONCAT(u.first_name, ' ', u.last_name) as donor_name, dp.blood_type, d.donated_at
         FROM donations d
@@ -137,7 +144,7 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // Handle error
+    
 }
 ?>
 <!DOCTYPE html>
@@ -207,7 +214,7 @@ try {
                     </div>
                 </div>
 
-                <!-- Charts Row -->
+                
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
                     <div
                         style="background: var(--card-bg, #fff); border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
@@ -295,7 +302,13 @@ try {
                         <p>Appointments</p>
                     </span>
                 </div>
-                <!-- AI Chat Button -->
+                <div>
+                    <span onclick="loadSection('map-data')">
+                        <i class="bi bi-map-fill"></i>
+                        <p>Map Data</p>
+                    </span>
+                </div>
+                
                 <div style="grid-column: span 4; width: 100%; max-width: 100%;">
                     <span onclick="loadSection('ai')">
                         <i class="bi bi-robot"></i>
@@ -304,14 +317,14 @@ try {
                 </div>
             </div>
             <div class="view-nav">
+                
+                <div id="ai-section" class="dashboard-section" style="display: none;">
+                    <?php include __DIR__ . '/../includes/ai_chat_widget.php'; ?>
+                </div>
+
                 <section id="contentFrameView">
 
-                    <!-- AI Section -->
-                    <div id="ai-section" class="dashboard-section" style="display: none;">
-                        <?php include __DIR__ . '/../includes/ai_chat_widget.php'; ?>
-                    </div>
-
-                    <!-- Users Section -->
+                    
                     <div id="users-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -381,7 +394,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Hospitals Section -->
+                    
                     <div id="hospitals-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -455,8 +468,53 @@ try {
                             </div>
                         </div>
                     </div>
+                    
+                    <div id="map-data-section" class="dashboard-section" style="display: none;">
+                        <div class="content-wrapper">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h2 style="margin: 0;">Map Data (JSON)</h2>
+                                <button class="btn btn-primary btn-sm" onclick="openModal('map_center')"
+                                    style="font-size: 0.85rem; padding: 6px 16px;">
+                                    <i class="bi bi-plus-lg"></i> Add Center
+                                </button>
+                            </div>
+                            <div class="donations-table-wrapper">
+                                <table class="donations-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>City</th>
+                                            <th>Coordinates</th>
+                                            <th>Contact</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($all_map_centers)): ?>
+                                            <?php foreach ($all_map_centers as $mc): ?>
+                                                <tr>
+                                                    <td><?php echo $mc['center_id']; ?></td>
+                                                    <td><strong><?php echo htmlspecialchars($mc['name']); ?></strong></td>
+                                                    <td><?php echo htmlspecialchars($mc['city']); ?></td>
+                                                    <td><?php echo $mc['lat'] . ', ' . $mc['lng']; ?></td>
+                                                    <td><?php echo htmlspecialchars($mc['contact_number'] ?? 'N/A'); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="5" style="text-align: center; padding: 20px; color: 
+                                                    centers
+                                                    in JSON.</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- Blood Centers Section -->
+                    
                     <div id="centers-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div
@@ -516,7 +574,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Blood Requests Section -->
+                    
                     <div id="requests-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Blood Requests</h2>
@@ -574,7 +632,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Donor Profiles Section -->
+                    
                     <div id="donors-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Donor Profiles</h2>
@@ -626,14 +684,15 @@ try {
                         </div>
                     </div>
 
-                    <!-- AI DOCS Section (Replacing Inventory) -->
+                    
                     <div id="ai-docs-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h2>AI Knowledge Base</h2>
                                 <div class="ai-status" style="margin: 0;">
                                     <div class="ai-pulse"></div>
-                                    <span style="font-size: 0.9rem; font-weight: 600;">Engine: Llama-3.1-8B</span>
+                                    <?php $aiConfig = require __DIR__ . '/../includes/ai_config.php'; ?>
+                                    <span style="font-size: 0.9rem; font-weight: 600;">Engine: <?php echo htmlspecialchars($aiConfig['default_model']); ?></span>
                                 </div>
                             </div>
 
@@ -664,13 +723,15 @@ try {
                             <div class="upload-zone" id="uploadZone">
                                 <i class="bi bi-cloud-arrow-up"></i>
                                 <h3>Upload Training Data</h3>
-                                <p>Drag and drop PDF, TXT, or DOCX files to feed HopeAI's knowledge base.</p>
-                                <input type="file" id="aiDocUpload" multiple accept=".pdf,.txt,.docx">
+                                <p>Drag and drop TXT files to feed HopeAI's knowledge base.</p>
+                                <input type="file" id="aiDocUpload" multiple accept=".txt">
                             </div>
 
                             <div class="donations-table-wrapper">
-                                <div class="section-header" style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.02);">
-                                    <h3 style="font-size: 1.1rem; margin: 0;"><i class="bi bi-list-check" style="color: var(--color-primary);"></i> AI Guidance Documents</h3>
+                                <div class="section-header"
+                                    style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.02);">
+                                    <h3 style="font-size: 1.1rem; margin: 0;"><i class="bi bi-list-check"
+                                            style="color: var(--color-primary);"></i> AI Guidance Documents</h3>
                                 </div>
                                 <table class="donations-table">
                                     <thead>
@@ -682,7 +743,7 @@ try {
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="aiDocsTableBody">
                                         <tr>
                                             <td><strong>redhope_core_philosophy.pdf</strong></td>
                                             <td>1.2 MB</td>
@@ -690,8 +751,10 @@ try {
                                             <td><span class="doc-status-badge active">Active</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-primary" title="Re-sync"><i class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-sm btn-outline-primary" title="Re-sync"><i
+                                                            class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger" title="Delete"><i
+                                                            class="bi bi-trash"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -702,8 +765,10 @@ try {
                                             <td><span class="doc-status-badge active">Active</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-sm btn-outline-primary"><i
+                                                            class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger"><i
+                                                            class="bi bi-trash"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -714,8 +779,10 @@ try {
                                             <td><span class="doc-status-badge indexing">Indexing...</span></td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-outline-secondary" disabled><i class="bi bi-arrow-repeat"></i></button>
-                                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled><i
+                                                            class="bi bi-arrow-repeat"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger"><i
+                                                            class="bi bi-trash"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -725,13 +792,14 @@ try {
                         </div>
                     </div>
 
-                    <!-- Messages Section -->
+                    
                     <div id="messages-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h2>Messages</h2>
                                 <button class="btn btn-primary" onclick="openComposeModal()"><i
-                                        class="bi bi-pencil-square"></i> Compose</button>
+                                        class="bi bi-pencil-square"></i>
+                                    Compose</button>
                             </div>
                             <div class="donations-table-wrapper">
                                 <table class="donations-table">
@@ -792,7 +860,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Appointments Section -->
+                    
                     <div id="appointments-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>All Appointments</h2>
@@ -883,7 +951,7 @@ try {
         </section>
     </section>
 
-    <!-- Admin CRUD Modal -->
+    
     <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content"
@@ -903,7 +971,7 @@ try {
         </div>
     </div>
 
-    <!-- Compose Message Modal -->
+    
     <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -948,7 +1016,7 @@ try {
         </div>
     </div>
 
-    <!-- View Message Modal -->
+    
     <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -976,7 +1044,7 @@ try {
     <?php include __DIR__ . "/../includes/footer.php"; ?>
     <script src="/redhope/assets/js/admin.js"></script>
     <script>
-        // Pass centers + donations data to JS for inventory modal dropdowns
+        
         window.centersData = <?php echo json_encode($all_centers); ?>;
         window.donationsData = <?php echo json_encode($valid_donations); ?>;
 
@@ -994,6 +1062,12 @@ try {
 
             document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
             const target = document.getElementById(section + '-section');
+            
+            const frame = document.getElementById('contentFrameView');
+            if (frame) {
+                frame.style.display = (section === 'ai') ? 'none' : 'block';
+            }
+
             if (target) {
                 target.style.display = 'block';
                 target.style.opacity = 0;
@@ -1008,7 +1082,7 @@ try {
         function initCharts() {
             const chartColors = ['#e53e3e', '#dd6b20', '#d69e2e', '#38a169', '#3182ce', '#805ad5', '#d53f8c', '#2b6cb0'];
 
-            // 1. Blood Type Distribution (Doughnut)
+            
             const btLabels = <?php echo json_encode(array_column($blood_type_dist, 'blood_type')); ?>;
             const btData = <?php echo json_encode(array_map('intval', array_column($blood_type_dist, 'cnt'))); ?>;
 
@@ -1033,7 +1107,7 @@ try {
                 });
             }
 
-            // 2. Monthly Donations (Bar)
+            
             const mdLabels = <?php echo json_encode(array_column($monthly_donations, 'month')); ?>;
             const mdData = <?php echo json_encode(array_map('intval', array_column($monthly_donations, 'cnt'))); ?>;
 
@@ -1057,7 +1131,7 @@ try {
                 }
             });
 
-            // 3. Urgency Distribution (Pie)
+            
             const urgLabels = <?php echo json_encode(array_column($urgency_dist, 'urgency_level')); ?>;
             const urgData = <?php echo json_encode(array_map('intval', array_column($urgency_dist, 'cnt'))); ?>;
             const urgColors = { 'Normal': '#38a169', 'Urgent': '#dd6b20', 'Emergency': '#e53e3e' };
@@ -1084,6 +1158,9 @@ try {
             }
         }
     </script>
+    
+    <script src="/redhope/assets/js/admin.js?v=<?php echo time(); ?>"></script>
+    <script src="/redhope/assets/js/ai_admin.js"></script>
 </body>
 
 </html>

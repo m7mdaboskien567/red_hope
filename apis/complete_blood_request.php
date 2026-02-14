@@ -19,7 +19,7 @@ if (!$request_id) {
 }
 
 try {
-    // 1. Check if the request exists, is in progress, and belongs to this donor
+    
     $stmt = $pdo->prepare("SELECT * FROM blood_requests WHERE request_id = ? AND status = 'In Progress' AND donor_id = ?");
     $stmt->execute([$request_id, $donor_id]);
     $request = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -29,12 +29,12 @@ try {
         exit();
     }
 
-    // 2. Update Request Status to 'Fulfilled'
+    
     $stmt = $pdo->prepare("UPDATE blood_requests SET status = 'Fulfilled' WHERE request_id = ?");
     $stmt->execute([$request_id]);
 
-    // 3. Create a Corresponding Donation Record (so stats update)
-    // We assume 450ml for a standard donation
+    
+    
     $stmt = $pdo->prepare("
         INSERT INTO donations (donor_id, center_id, volume_ml, hemoglobin_level, status, donated_at)
         SELECT ?, 1, 450, 13.5, 'Approved', NOW()

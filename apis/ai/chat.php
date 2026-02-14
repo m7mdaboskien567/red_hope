@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $pdo = getDB();
 
-// Load .env
+
 $envFile = __DIR__ . '/../../wp-private/.env';
 $apiKey = '';
 if (file_exists($envFile)) {
@@ -43,7 +43,7 @@ if (empty($userMessage)) {
 }
 
 try {
-    // 1. Session Logic
+
     if (!$sessionId) {
         $stmt = $pdo->prepare("INSERT INTO ai_chat_sessions (user_id, created_at, updated_at) VALUES (?, NOW(), NOW())");
         $stmt->execute([$userId]);
@@ -55,18 +55,13 @@ try {
         $stmt->execute([$sessionId]);
     }
 
-    // 2. Save User Msg
+
     $stmt = $pdo->prepare("INSERT INTO ai_chat_messages (session_id, sender, message_content, sent_at) VALUES (?, 'User', ?, NOW())");
     $stmt->execute([$sessionId, $userMessage]);
 
-    // 3. Gemini Helper with Retry + Model Fallback
-    $models = [
-        'gemini-flash-latest',
-        'gemini-2.5-flash-lite',
-        'gemini-2.5-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-2.0-flash'
-    ];
+
+    $aiConfig = require __DIR__ . '/../../includes/ai_config.php';
+    $models = $aiConfig['models'];
 
     function callGemini($payload, $apiKey, $models, $maxRetries = 2)
     {
@@ -99,14 +94,38 @@ try {
                     sleep(3);
                     continue;
                 }
-                break; // Try next model
+                break;
             }
         }
         return ['code' => 429, 'body' => null, 'debug' => $debugLog];
     }
 
+
+    $docsContext = "";
+    $metaFile = __DIR__ . '/../../assets/uploads/ai_docs_meta.json';
+    if (file_exists($metaFile)) {
+        $meta = json_decode(file_get_contents($metaFile), true);
+        if ($meta) {
+            foreach ($meta as $id => $fileData) {
+                if (($fileData['status'] ?? '') === 'active') {
+                    $filePath = __DIR__ . '/../../assets/uploads/' . $id;
+                    if (file_exists($filePath)) {
+                        $content = file_get_contents($filePath);
+
+                        $docsContext .= "\n\n--- Document: " . $fileData['original_name'] . " ---\n" . substr($content, 0, 8000);
+                    }
+                }
+            }
+        }
+    }
+
+    $systemInstruction = "You are HopeAI, a helpful RedHope health assistant. Use Markdown (###, **, *). Concise responses.";
+    if ($docsContext) {
+        $systemInstruction .= "\n\nUse the following knowledge base to answer questions if relevant:\n" . $docsContext;
+    }
+
     $payload = [
-        "system_instruction" => ["parts" => [["text" => "You are HopeAI, a helpful RedHope health assistant. Use Markdown (###, **, *). Concise responses."]]],
+        "system_instruction" => ["parts" => [["text" => $systemInstruction]]],
         "contents" => [["parts" => [["text" => $userMessage]]]],
         "generationConfig" => ["temperature" => 0.7, "maxOutputTokens" => 1200]
     ];
@@ -116,11 +135,11 @@ try {
     if ($result['code'] === 200) {
         $aiResponse = $result['body']['candidates'][0]['content']['parts'][0]['text'] ?? 'Sorry, I could not generate a response.';
 
-        // 4. Save AI Msg
+
         $stmt = $pdo->prepare("INSERT INTO ai_chat_messages (session_id, sender, message_content, sent_at) VALUES (?, 'AI', ?, NOW())");
         $stmt->execute([$sessionId, $aiResponse]);
 
-        // 5. Title Generation (with delay to avoid burst)
+
         $generatedTitle = null;
         if ($isNewSession) {
             $titlePayload = ["contents" => [["parts" => [["text" => "Short title (max 4 words) for chat starting: " . $userMessage]]]]];
@@ -131,7 +150,7 @@ try {
                 $uStmt = $pdo->prepare("UPDATE ai_chat_sessions SET title = ? WHERE session_id = ?");
                 $uStmt->execute([$generatedTitle, $sessionId]);
             } else {
-                // Fallback: use first few words of user message as title
+
                 $generatedTitle = substr($userMessage, 0, 40);
                 $uStmt = $pdo->prepare("UPDATE ai_chat_sessions SET title = ? WHERE session_id = ?");
                 $uStmt->execute([$generatedTitle, $sessionId]);

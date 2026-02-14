@@ -1,7 +1,3 @@
-/**
- * 🔥 HopeAI — Premium Chat Engine
- * Persistent sessions, history, typewriter, animations
- */
 document.addEventListener("DOMContentLoaded", () => {
   const chatWidget = document.querySelector(".ai-chat-widget");
   if (!chatWidget) return;
@@ -15,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSessionId = null;
   let isTyping = false;
 
-  // ── 1. Markdown Formatter ──
   function formatMessage(text) {
     if (!text) return "";
     text = text.replace(/```([\s\S]*?)```/gm, "<pre><code>$1</code></pre>");
@@ -33,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return text.trim();
   }
 
-  // ── 2. Typewriter Effect ──
   function typeEffect(element, text, speed = 12) {
     let i = 0;
     element.innerHTML = "";
@@ -51,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     type();
   }
 
-  // ── 3. Append Message to UI ──
   function appendMessage(sender, text, type = "user", animate = false) {
     const time = new Date().toLocaleTimeString([], {
       hour: "2-digit",
@@ -63,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const nameSpan = document.createElement("span");
     nameSpan.className = "ai-name";
 
-    // Icon Branding
     if (type === "system") {
       nameSpan.innerHTML = `<img src="/redhope/assets/imgs/favicon.png" alt="AI" class="ai-avatar">`;
     } else {
@@ -90,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
-  // ── 4. Load Chat History ──
   async function loadHistory() {
     try {
       const res = await fetch("/redhope/apis/ai/get_sessions.php");
@@ -121,14 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
               </button>
             </div>
           `;
-
-          // Click on item body to switch session
           item.addEventListener("click", (e) => {
             if (e.target.closest(".history-actions")) return;
             switchSession(session.session_id);
           });
 
-          // Rename
           item.querySelector(".rename-btn").addEventListener("click", (e) => {
             e.stopPropagation();
             const newTitle = prompt(
@@ -140,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           });
 
-          // Delete
           item.querySelector(".delete-btn").addEventListener("click", (e) => {
             e.stopPropagation();
             if (confirm("Delete this chat? This cannot be undone.")) {
@@ -158,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ── Delete Session ──
   async function deleteSession(id) {
     try {
       const res = await fetch("/redhope/apis/ai/delete_session.php", {
@@ -179,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ── Rename Session ──
   async function renameSession(id, title) {
     try {
       const res = await fetch("/redhope/apis/ai/rename_session.php", {
@@ -196,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ── 5. Switch/Load Session Messages ──
   async function switchSession(id) {
     currentSessionId = id;
     messagesContainer.innerHTML = "";
@@ -223,12 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Switch Session Error:", e);
     }
 
-    // Close history menu after selection
     const historyMenu = document.getElementById("aiHistoryMenu");
     if (historyMenu) historyMenu.classList.remove("show");
   }
-
-  // ── 6. New Chat ──
   function startNewChat() {
     currentSessionId = null;
     messagesContainer.innerHTML = "";
@@ -240,12 +221,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     loadHistory();
 
-    // Close history menu
     const historyMenu = document.getElementById("aiHistoryMenu");
     if (historyMenu) historyMenu.classList.remove("show");
   }
-
-  // ── 7. Send Message ──
   async function handleSendMessage() {
     const message = inputField.value.trim();
     if (!message || isTyping) return;
@@ -294,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ── Typing Indicator ──
+  
   function showTypingIndicator(text = "Thinking") {
     removeTypingIndicator();
     const indicator = document.createElement("div");
@@ -320,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ind) ind.remove();
   }
 
-  // ── 8. UI Interactions ──
+  
   const historyBtn = chatWidget.querySelector(".ai-history-btn");
   const historyMenu = document.getElementById("aiHistoryMenu");
 
@@ -337,14 +315,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Send button active state
+  
   inputField.addEventListener("input", () => {
     const hasValue = inputField.value.trim().length > 0;
     sendBtn.style.opacity = hasValue ? "1" : "0.6";
     sendBtn.style.cursor = hasValue ? "pointer" : "default";
   });
 
-  // Init
+  
   sendBtn.addEventListener("click", handleSendMessage);
   inputField.addEventListener("keypress", (e) => {
     if (e.key === "Enter") handleSendMessage();

@@ -1,7 +1,3 @@
-/**
- * RedHope Dashboard JavaScript
- */
-
 document.addEventListener("DOMContentLoaded", () => {
   initPersonalInfoForm();
   initDonorProfileForm();
@@ -11,9 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initDonationsFilter();
 });
 
-/*
- * Personal Info Form Handler
- */
 function initPersonalInfoForm() {
   const form = document.getElementById("personalInfoForm");
   if (!form) return;
@@ -55,9 +48,6 @@ function initPersonalInfoForm() {
   });
 }
 
-/**
- * Donor Profile Form Handler
- */
 function initDonorProfileForm() {
   const form = document.getElementById("donorProfileForm");
   if (!form) return;
@@ -98,9 +88,6 @@ function initDonorProfileForm() {
   });
 }
 
-/**
- * Password Form Handler
- */
 function initPasswordForm() {
   const form = document.getElementById("passwordForm");
   if (!form) return;
@@ -148,9 +135,6 @@ function initPasswordForm() {
   });
 }
 
-/**
- * Appointment Form Handler
- */
 function initAppointmentForm() {
   const form = document.getElementById("appointmentForm");
   if (!form) return;
@@ -189,9 +173,6 @@ function initAppointmentForm() {
   });
 }
 
-/**
- * Cancel Appointment Buttons
- */
 function initCancelButtons() {
   document.querySelectorAll(".btn-cancel, .btn-cancel-apt").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -229,9 +210,6 @@ function initCancelButtons() {
   });
 }
 
-/**
- * Appointment Management Actions
- */
 window.openRescheduleModal = function (id, date, time) {
   document.getElementById("reschedule_appt_id").value = id;
   document.getElementById("reschedule_date").value = date;
@@ -309,9 +287,6 @@ async function cancelAppointment(id) {
   }
 }
 
-/**
- * Accept Blood Request
- */
 window.acceptBloodRequest = async function (requestId) {
   if (
     !confirm(
@@ -336,7 +311,6 @@ window.acceptBloodRequest = async function (requestId) {
     const result = await response.json();
 
     if (result.success) {
-      // Fill Modal
       document.getElementById("h_name").innerText = result.hospital.name;
       document.getElementById("h_address").innerText = result.hospital.address;
       document.getElementById("h_city").innerText = result.hospital.city;
@@ -345,16 +319,13 @@ window.acceptBloodRequest = async function (requestId) {
       document.getElementById("h_email").innerHTML =
         `<i class="bi bi-envelope"></i> ${result.hospital.email}`;
 
-      // Show Modal
       const infoModal = new bootstrap.Modal(
         document.getElementById("hospitalInfoModal"),
       );
       infoModal.show();
 
-      // Success feedback
       showAlert(result.message, "success");
 
-      // Optional: Reload after modal close to update status list
       document.getElementById("hospitalInfoModal").addEventListener(
         "hidden.bs.modal",
         function () {
@@ -374,9 +345,6 @@ window.acceptBloodRequest = async function (requestId) {
   }
 };
 
-/**
- * Filter Donation History Table
- */
 function initDonationsFilter() {
   const searchInput = document.getElementById("donationsSearch");
   const table = document.querySelector(".donations-table");
@@ -387,7 +355,6 @@ function initDonationsFilter() {
     const rows = table.querySelectorAll("tbody tr");
 
     rows.forEach((row) => {
-      // Check if it's the empty state row
       if (row.cells.length === 1) return;
 
       const text = row.innerText.toLowerCase();
@@ -396,9 +363,6 @@ function initDonationsFilter() {
   });
 }
 
-/**
- * Complete Blood Request
- */
 window.completeBloodRequest = async function (requestId) {
   if (
     !confirm(
@@ -437,7 +401,6 @@ window.completeBloodRequest = async function (requestId) {
   }
 };
 
-// CSS for spin animation
 const style = document.createElement("style");
 style.textContent = `
     @keyframes spin {

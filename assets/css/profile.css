@@ -443,7 +443,6 @@ textarea:focus {
   border-bottom: none;
 }
 
-/* ==================== LISTS (Activity/Requests) ==================== */
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -494,7 +493,6 @@ textarea:focus {
   margin: 0;
 }
 
-/* ==================== APPOINTMENT CARDS ==================== */
 .appointments-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
@@ -588,7 +586,6 @@ textarea:focus {
   background: #ffcdd2;
 }
 
-/* ==================== BUTTONS ==================== */
 .btn-primary {
   background: var(--gradient-primary);
   color: white;
@@ -758,4 +755,87 @@ textarea:focus {
 [data-theme="dark"] .activity-row:hover {
   background: var(--bg-alt);
   border-color: var(--color-primary);
+}
+
+
+
+@media (max-width: 992px) {
+  #root {
+    margin-top: 100px;
+    padding: 0 1.5rem;
+  }
+
+  .user_dashboard {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #root {
+    margin: 80px auto 20px;
+    padding: 0 1rem;
+  }
+
+  .info-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .statistics {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .nav-links-btns > div {
+    flex: 1 1 140px; 
+  }
+
+  .nav-links-btns span {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .nav-links-btns span i {
+    font-size: 2rem;
+  }
+
+  .nav-links-btns span p {
+    font-size: 0.9rem;
+  }
+
+  .view-nav {
+    padding: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .appointment-card-body {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .appointment-date {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .appointment-actions {
+    flex-direction: column;
+  }
+
+  .recent-activity {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links-btns > div {
+    flex: 1 1 100%; 
+  }
+
+  .user-avatar {
+    width: 90px;
+    height: 90px;
+    font-size: 2.5rem;
+  }
 }

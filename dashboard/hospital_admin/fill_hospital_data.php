@@ -17,19 +17,19 @@ try {
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Check if this user already has a hospital registered
+    
     $stmt = $pdo->prepare("SELECT * FROM hospitals WHERE admin_id = ?");
     $stmt->execute([$user_id]);
     $existing_hospital = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // If hospital exists and is verified, redirect to dashboard
+    
     if ($existing_hospital && $existing_hospital['is_verified']) {
         header("Location: /redhope/dashboard/hospital_admin/");
         exit();
     }
 
 } catch (PDOException $e) {
-    // Handle silently
+    
 }
 ?>
 <!DOCTYPE html>
@@ -60,7 +60,7 @@ try {
                 <div id="alertContainer"></div>
 
                 <?php if ($existing_hospital): ?>
-                    <!-- Pending Approval State -->
+                    
                     <div class="pending-approval-card">
                         <div class="pending-icon">
                             <i class="bi bi-hourglass-split"></i>
@@ -98,7 +98,7 @@ try {
                         </div>
                     </div>
                 <?php else: ?>
-                    <!-- Registration Form -->
+                    
                     <div class="profile-section">
                         <div class="section-header">
                             <h2><i class="bi bi-hospital"></i> Hospital Information</h2>
