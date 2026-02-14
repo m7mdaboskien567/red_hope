@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return text.trim();
   }
 
-  function typeEffect(element, text, speed = 12) {
+  function typeEffect(element, text, speed = 5) {
     let i = 0;
     element.innerHTML = "";
     isTyping = true;
@@ -272,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  
   function showTypingIndicator(text = "Thinking") {
     removeTypingIndicator();
     const indicator = document.createElement("div");
@@ -298,7 +297,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ind) ind.remove();
   }
 
-  
   const historyBtn = chatWidget.querySelector(".ai-history-btn");
   const historyMenu = document.getElementById("aiHistoryMenu");
 
@@ -315,14 +313,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  
   inputField.addEventListener("input", () => {
     const hasValue = inputField.value.trim().length > 0;
     sendBtn.style.opacity = hasValue ? "1" : "0.6";
     sendBtn.style.cursor = hasValue ? "pointer" : "default";
   });
 
-  
   sendBtn.addEventListener("click", handleSendMessage);
   inputField.addEventListener("keypress", (e) => {
     if (e.key === "Enter") handleSendMessage();

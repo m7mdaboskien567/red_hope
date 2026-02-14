@@ -441,7 +441,7 @@ async function deleteMapCenter(centerId) {
     const result = await res.json();
     if (result.success) {
       showAlert("Map center deleted successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-map-center-${centerId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -466,7 +466,7 @@ async function deleteUser(userId) {
     const result = await res.json();
     if (result.success) {
       showAlert("User deleted successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-user-${userId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -491,7 +491,7 @@ async function deleteHospital(hospitalId) {
     const result = await res.json();
     if (result.success) {
       showAlert("Hospital deleted successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-hospital-${hospitalId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -514,7 +514,15 @@ async function verifyHospital(hospitalId, btn) {
     const result = await res.json();
     if (result.success) {
       showAlert("Hospital verified successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      const row = document.getElementById(`row-hospital-${hospitalId}`);
+      if (row) {
+        const statusCell = row.querySelector("td:nth-child(5)");
+        if (statusCell) {
+          statusCell.innerHTML =
+            '<span class="status-badge approved"><i class="bi bi-check-circle-fill"></i> Verified</span>';
+        }
+        btn.remove();
+      }
     } else {
       showAlert(result.message, "error");
       btn.innerHTML = orig;
@@ -538,7 +546,7 @@ async function deleteCenter(centerId) {
     const result = await res.json();
     if (result.success) {
       showAlert("Blood center deleted successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-center-${centerId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -558,7 +566,7 @@ async function deleteInventory(inventoryId) {
     const result = await res.json();
     if (result.success) {
       showAlert("Inventory item deleted successfully", "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-inventory-${inventoryId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -579,7 +587,30 @@ async function updateAppointment(appointmentId, action, actionLabel) {
     const result = await res.json();
     if (result.success) {
       showAlert(result.message, "success");
-      setTimeout(() => location.reload(), 1200);
+      const row = document.getElementById(`row-appointment-${appointmentId}`);
+      if (row) {
+        const statusCell = row.querySelector("td:nth-child(6)");
+        const actionsCell = row.querySelector("td:nth-child(7)");
+        if (statusCell) {
+          let statusLabel =
+            action === "approve"
+              ? "Allowed"
+              : action === "reject"
+                ? "Rejected"
+                : action === "complete"
+                  ? "Completed"
+                  : "Pending";
+          let badgeClass = statusLabel.toLowerCase();
+          statusCell.innerHTML = `<span class="status-badge ${badgeClass}">${statusLabel}</span>`;
+        }
+        if (action === "complete" && actionsCell) {
+          actionsCell.innerHTML =
+            '<span class="text-muted small"><i class="bi bi-check-circle-fill text-success"></i> Done</span>';
+        } else {
+          // For other status changes, we'll reload for now to ensure all UI logic (buttons) is correct
+          setTimeout(() => location.reload(), 1200);
+        }
+      }
     } else {
       showAlert(result.message, "error");
     }
@@ -636,7 +667,7 @@ async function deleteMessage(messageId) {
     const result = await res.json();
     if (result.success) {
       showAlert(result.message, "success");
-      setTimeout(() => location.reload(), 1200);
+      removeRow(`row-message-${messageId}`);
     } else {
       showAlert(result.message, "error");
     }
@@ -692,3 +723,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function removeRow(rowId) {
+  const row = document.getElementById(rowId);
+  if (row) {
+    row.style.transition = "all 0.4s ease";
+    row.style.opacity = "0";
+    row.style.transform = "translateX(20px)";
+    setTimeout(() => {
+      row.remove();
+    }, 400);
+  }
+}

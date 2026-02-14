@@ -70,7 +70,8 @@ async function confirmCancelRequest(requestId) {
     const result = await response.json();
 
     if (result.success) {
-      location.reload();
+      showAlert(result.message, "success");
+      removeRow(`row-request-${requestId}`);
     } else {
       showAlert(result.message, "error");
       btn.innerHTML = originalContent;
@@ -83,9 +84,7 @@ async function confirmCancelRequest(requestId) {
   }
 }
 
-function initCancelRequestButtons() {
-  
-}
+function initCancelRequestButtons() {}
 
 function initAdminProfileForm() {
   const form = document.getElementById("adminProfileForm");
@@ -216,7 +215,16 @@ window.fulfillBloodRequest = async function (requestId) {
 
     if (result.success) {
       showAlert(result.message, "success");
-      setTimeout(() => location.reload(), 1500);
+      const row = document.getElementById(`row-request-${requestId}`);
+      if (row) {
+        const statusBadge = row.querySelector(".status-badge");
+        const btn = row.querySelector("button");
+        if (statusBadge) {
+          statusBadge.textContent = "Fulfilled";
+          statusBadge.className = "status-badge eligible";
+        }
+        if (btn) btn.remove();
+      }
     } else {
       showAlert(result.message, "error");
       btn.innerHTML = originalText;
@@ -312,7 +320,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await res.json();
         if (result.success) {
           showAlert(result.message, "success");
-          setTimeout(() => location.reload(), 1200);
+          const modalEl = document.getElementById("replyModal");
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+          replyForm.reset();
         } else {
           showAlert(result.message, "error");
           btn.innerHTML = origText;
@@ -326,3 +337,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function removeRow(rowId) {
+  const row = document.getElementById(rowId);
+  if (row) {
+    row.style.transition = "all 0.4s ease";
+    row.style.opacity = "0";
+    row.style.transform = "translateX(20px)";
+    setTimeout(() => {
+      row.remove();
+    }, 400);
+  }
+}

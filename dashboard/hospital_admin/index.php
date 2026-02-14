@@ -18,12 +18,12 @@ $all_hospital_requests = [];
 $recent_activity = [];
 
 try {
-    
+
     $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    
+
     $stmt = $pdo->prepare("SELECT * FROM hospitals WHERE admin_id = ?");
     $stmt->execute([$user_id]);
     $hospital = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ try {
 
     $hospital_id = $hospital['hospital_id'];
 
-    
+
     $stmt = $pdo->prepare("
         SELECT br.*, u.first_name as donor_first, u.last_name as donor_last, u.phone as donor_phone
         FROM blood_requests br
@@ -55,7 +55,7 @@ try {
             $total_units_needed += $req['units_requested'];
     }
 
-    
+
     $stmt = $pdo->prepare("
         SELECT * FROM blood_requests 
         WHERE hospital_id = ? AND status = 'Open'
@@ -65,7 +65,7 @@ try {
     $stmt->execute([$hospital_id]);
     $recent_activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $stmt = $pdo->prepare("
         SELECT bi.*, bc.name as center_name, bc.city as center_city
         FROM blood_inventory bi
@@ -76,7 +76,7 @@ try {
     $stmt->execute();
     $inventory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     $stmt = $pdo->prepare("
         SELECT m.*, CONCAT(u.first_name, ' ', u.last_name) as sender_name 
         FROM messages m 
@@ -90,7 +90,7 @@ try {
     $blood_types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 } catch (PDOException $e) {
-    
+
 }
 
 $user_name = $user['first_name'] . ' ' . $user['last_name'];
@@ -127,7 +127,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </span>
                     </div>
                 </div>
-                
+
                 <a href="javascript:void(0)" onclick="loadSection('new-request')" class="btn-donate-now">
                     <i class="bi bi-plus-circle"></i> New Request
                 </a>
@@ -158,7 +158,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
 
-                
+
                 <div class="charts-grid"
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
                     <div class="chart-card">
@@ -242,12 +242,12 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
             <div class="view-nav">
                 <section id="contentFrameView">
 
-                    
+
                     <div id="ai-section" class="dashboard-section" style="display: none;">
                         <?php include __DIR__ . '/../../includes/ai_chat_widget.php'; ?>
                     </div>
 
-                    
+
                     <div id="new-request-section" class="dashboard-section" style="display: none;">
                         <div class="appointment-form-wrapper" style="margin: 0; box-shadow: none;">
                             <h2>Submit Blood Request</h2>
@@ -288,24 +288,28 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    
+
                     <div id="all-requests-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Hospital Request History</h2>
                             <div class="activity-list">
                                 <?php if (!empty($all_hospital_requests)): ?>
                                     <?php foreach ($all_hospital_requests as $req): ?>
-                                        <div class="activity-item d-flex align-items-center">
+                                        <div class="activity-item d-flex align-items-center"
+                                            id="row-request-<?php echo $req['request_id']; ?>">
                                             <div class="activity-icon"><i class="bi bi-droplet-fill text-danger"></i></div>
                                             <div class="activity-details flex-grow-1">
                                                 <h4><?php echo $req['blood_type_required']; ?> for Patient:
-                                                    <?php echo htmlspecialchars($req['patient_identifier'] ?? 'N/A'); ?></h4>
+                                                    <?php echo htmlspecialchars($req['patient_identifier'] ?? 'N/A'); ?>
+                                                </h4>
                                                 <p><?php echo $req['units_requested']; ?> units •
-                                                    <?php echo date('M d, Y', strtotime($req['created_at'])); ?></p>
+                                                    <?php echo date('M d, Y', strtotime($req['created_at'])); ?>
+                                                </p>
                                                 <?php if ($req['donor_id']): ?>
                                                     <p class="small text-muted"><i class="bi bi-person-fill"></i> Accepted by:
                                                         <?php echo htmlspecialchars($req['donor_first'] . ' ' . $req['donor_last']); ?>
-                                                        (<?php echo htmlspecialchars($req['donor_phone']); ?>)</p>
+                                                        (<?php echo htmlspecialchars($req['donor_phone']); ?>)
+                                                    </p>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="activity-status-wrapper d-flex flex-column align-items-end gap-2">
@@ -335,7 +339,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    
+
                     <div id="donations-history-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Fulfilled Donations History</h2>
@@ -363,7 +367,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                                                     </td>
                                                     <td><span class="status-badge eligible">Fulfilled</span></td>
                                                 </tr>
-                                            <?php
+                                                <?php
                                             endif;
                                         endforeach;
                                         if (!$has_fulfilled):
@@ -379,7 +383,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    
+
                     <div id="profile-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Admin & Hospital Profile</h2>
@@ -418,7 +422,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
 
-                    
+
                     <div id="messages-section" class="dashboard-section" style="display: none;">
                         <div class="content-wrapper">
                             <h2>Messages</h2>
@@ -435,7 +439,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                                     <tbody>
                                         <?php if (!empty($all_messages)): ?>
                                             <?php foreach ($all_messages as $msg): ?>
-                                                <tr>
+                                                <tr id="row-message-<?php echo $msg['message_id']; ?>">
                                                     <td><strong><?php echo htmlspecialchars($msg['sender_name']); ?></strong>
                                                     </td>
                                                     <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>
@@ -471,7 +475,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         </section>
     </section>
 
-    
+
     <div class="modal fade" id="viewMessageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -498,7 +502,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="replyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -527,23 +531,23 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
     <script src="/redhope/assets/js/hospital.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab') || 'new-request';
             loadSection(tab);
         });
 
         function loadSection(section) {
-            
+
             document.querySelectorAll('.nav-links-btns span').forEach(el => el.classList.remove('active'));
 
             const activeBtn = document.querySelector(`.nav-links-btns span[onclick="loadSection('${section}')"]`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            
+
             document.querySelectorAll('.dashboard-section').forEach(el => el.style.display = 'none');
 
-            
+
             const target = document.getElementById(section + '-section');
             if (target) {
                 target.style.display = 'block';
@@ -554,13 +558,13 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                 }, 10);
             }
 
-            
+
             const newUrl = window.location.pathname + '?tab=' + section;
             window.history.pushState({ path: newUrl }, '', newUrl);
         }
     </script>
     <script>
-        
+
         <?php
         $status_counts = ['Open' => 0, 'In Progress' => 0, 'Fulfilled' => 0, 'Cancelled' => 0];
         $urgency_counts = ['Normal' => 0, 'Urgent' => 0, 'Emergency' => 0];
@@ -574,7 +578,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
         ?>
 
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             new Chart(document.getElementById('statusChart'), {
                 type: 'doughnut',
                 data: {
@@ -588,7 +592,7 @@ $user_name = $user['first_name'] . ' ' . $user['last_name'];
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
-            
+
             new Chart(document.getElementById('urgencyChart'), {
                 type: 'bar',
                 data: {

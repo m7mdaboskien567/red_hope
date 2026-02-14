@@ -345,7 +345,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_users)): ?>
                                             <?php foreach ($all_users as $u): ?>
-                                                <tr>
+                                                <tr id="row-user-<?php echo $u['user_id']; ?>">
                                                     <td><?php echo $u['user_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($u['first_name'] . ' ' . $u['last_name']); ?></strong>
                                                     </td>
@@ -415,7 +415,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_hospitals)): ?>
                                             <?php foreach ($all_hospitals as $hosp): ?>
-                                                <tr>
+                                                <tr id="row-hospital-<?php echo $hosp['hospital_id']; ?>">
                                                     <td><?php echo $hosp['hospital_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($hosp['name']); ?></strong></td>
                                                     <td><?php echo htmlspecialchars($hosp['city']); ?></td>
@@ -489,7 +489,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_map_centers)): ?>
                                             <?php foreach ($all_map_centers as $mc): ?>
-                                                <tr>
+                                                <tr id="row-map-center-<?php echo $mc['center_id']; ?>">
                                                     <td><?php echo $mc['center_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($mc['name']); ?></strong></td>
                                                     <td><?php echo htmlspecialchars($mc['city']); ?></td>
@@ -549,7 +549,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_centers)): ?>
                                             <?php foreach ($all_centers as $center): ?>
-                                                <tr>
+                                                <tr id="row-center-<?php echo $center['center_id']; ?>">
                                                     <td><?php echo $center['center_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($center['name']); ?></strong>
                                                     </td>
@@ -608,7 +608,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_requests)): ?>
                                             <?php foreach ($all_requests as $req): ?>
-                                                <tr>
+                                                <tr id="row-request-<?php echo $req['request_id']; ?>">
                                                     <td><?php echo $req['request_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($req['hospital_name']); ?></strong>
                                                         <br><small
@@ -667,7 +667,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_donor_profiles)): ?>
                                             <?php foreach ($all_donor_profiles as $dp): ?>
-                                                <tr>
+                                                <tr id="row-donor-<?php echo $dp['donor_id']; ?>">
                                                     <td><?php echo $dp['donor_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($dp['first_name'] . ' ' . $dp['last_name']); ?></strong>
                                                     </td>
@@ -840,7 +840,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_messages)): ?>
                                             <?php foreach ($all_messages as $msg): ?>
-                                                <tr>
+                                                <tr id="row-message-<?php echo $msg['message_id']; ?>">
                                                     <td><?php echo $msg['message_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($msg['sender_name']); ?></strong>
                                                     </td>
@@ -905,7 +905,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_appointments)): ?>
                                             <?php foreach ($all_appointments as $appt): ?>
-                                                <tr>
+                                                <tr id="row-appointment-<?php echo $appt['appointment_id']; ?>">
                                                     <td><?php echo $appt['appointment_id']; ?></td>
                                                     <td><strong><?php echo htmlspecialchars($appt['donor_name']); ?></strong>
                                                     </td>

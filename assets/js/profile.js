@@ -280,7 +280,8 @@ async function cancelAppointment(id) {
 
     const result = await response.json();
     if (result.success) {
-      window.location.href = `/redhope/dashboard/donator/index.php?msg=${encodeURIComponent(result.message)}&type=success`;
+      removeRow(`appt-card-${id}`);
+      showAlert(result.message, "success");
     } else {
       showAlert(result.message, "error");
     }
@@ -331,7 +332,23 @@ window.acceptBloodRequest = async function (requestId) {
       document.getElementById("hospitalInfoModal").addEventListener(
         "hidden.bs.modal",
         function () {
-          location.reload();
+          const row = document.getElementById(`row-request-${requestId}`);
+          if (row) {
+            const statusBadge = row.querySelector(".status-badge");
+            const urgencyBadge = row.querySelector(".activity-status");
+            const btn = row.querySelector("button");
+
+            if (statusBadge) {
+              statusBadge.textContent = "In Progress";
+              statusBadge.className = "status-badge in-progress";
+            }
+            if (btn) {
+              const span = document.createElement("span");
+              span.className = "text-muted small italic";
+              span.textContent = "Donor is on the way";
+              btn.replaceWith(span);
+            }
+          }
         },
         { once: true },
       );
@@ -390,7 +407,7 @@ window.completeBloodRequest = async function (requestId) {
 
     if (result.success) {
       showAlert(result.message, "success");
-      setTimeout(() => location.reload(), 1500);
+      removeRow(`row-request-${requestId}`);
     } else {
       showAlert(result.message, "error");
       btn.innerHTML = originalText;
@@ -433,21 +450,10 @@ window.viewMessage = function (subject, sender, date, content) {
  * Center Picker UI Logic
  */
 function initCenterPicker() {
-  const container = document.getElementById("center-picker");
-  if (!container) return;
+  const select = document.getElementById("center_id_select");
+  if (!select) return;
 
-  const cards = container.querySelectorAll(".center-card");
-  const hiddenInput = document.getElementById("selected_center_id");
-
-  cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      // Clear previous selection
-      cards.forEach((c) => c.classList.remove("selected"));
-      // Set new selection
-      card.classList.add("selected");
-      hiddenInput.value = card.dataset.centerId;
-    });
-  });
+  // Additional select interaction logic if needed
 }
 
 /**
@@ -484,44 +490,41 @@ function initLocationAwareness() {
 }
 
 async function updateDistancesAndSort(userCoords) {
-  const container = document.getElementById("center-picker");
-  if (!container) return;
+  const select = document.getElementById("center_id_select");
+  if (!select) return;
 
-  const cards = Array.from(container.querySelectorAll(".center-card"));
-  const centers = cards.map((card) => ({
-    id: card.dataset.centerId,
-    lat: parseFloat(card.dataset.lat),
-    lng: parseFloat(card.dataset.lng),
-    element: card,
+  const options = Array.from(select.options).filter((opt) => opt.value);
+  const data = options.map((opt) => ({
+    element: opt,
+    id: opt.value,
+    name: opt.text.split(" (")[0], // Extract pure name
+    city: opt.dataset.city || "",
+    lat: parseFloat(opt.dataset.lat),
+    lng: parseFloat(opt.dataset.lng),
   }));
 
-  const sorted = LocationService.sortCentersByProximity(centers, userCoords);
+  const sorted = LocationService.sortCentersByProximity(data, userCoords);
 
-  // Update distance labels in cards
+  // Clear existing options (except the first disabled one)
+  while (select.options.length > 1) {
+    select.remove(1);
+  }
+
+  // Re-add sorted options with distance labels
   sorted.forEach((s, index) => {
-    const badge = s.element.querySelector(".distance-badge");
-    if (badge) {
-      badge.textContent = `${s.distance.toFixed(1)} km away`;
-      badge.style.display = "inline-block";
-    }
-
-    // Add Recommended badge to the first one
-    s.element
-      .querySelectorAll(".picker-recommended-badge")
-      .forEach((b) => b.remove());
+    const newOpt = s.element;
+    const distanceText = `${s.distance.toFixed(1)}km away`;
+    newOpt.text = `${s.name} (${s.city}) - ${distanceText}`;
     if (index === 0) {
-      const recBadge = document.createElement("div");
-      recBadge.className = "picker-recommended-badge";
-      recBadge.innerHTML = '<i class="bi bi-star-fill"></i> Recommended';
-      s.element.appendChild(recBadge);
+      newOpt.text = `⭐ RECOMMENDED: ${newOpt.text}`;
     }
+    select.add(newOpt);
   });
 
-  // Auto-select nearest if nothing selected
-  const hiddenInput = document.getElementById("selected_center_id");
-  if (!hiddenInput.value && sorted.length > 0) {
-    sorted[0].element.click();
-    sorted[0].element.scrollIntoView({ behavior: "smooth", block: "center" });
+  // Auto-select the first (nearest) option
+  if (sorted.length > 0) {
+    select.value = sorted[0].id;
+    select.dispatchEvent(new Event("change"));
   }
 }
 
@@ -532,19 +535,16 @@ async function refreshRecommendations() {
   try {
     const coords = await LocationService.getCurrentPosition();
 
-    // Fetch centers from DOM metadata (simplest way since they are already rendered)
-    const pickerCards = Array.from(
-      document.querySelectorAll("#center-picker .center-card"),
-    );
-    const centers = pickerCards.map((card) => ({
-      center_id: card.dataset.centerId,
-      name: card.querySelector(".center-name").textContent,
-      address: card.dataset.address || "", // Might be missing in DOM
-      city: card
-        .querySelector(".center-addr")
-        .textContent.replace("Location: ", ""),
-      lat: parseFloat(card.dataset.lat),
-      lng: parseFloat(card.dataset.lng),
+    // Fetch centers from select options
+    const options = Array.from(
+      document.querySelectorAll("#center_id_select option"),
+    ).filter((opt) => opt.value);
+    const centers = options.map((opt) => ({
+      center_id: opt.value,
+      name: opt.text.split(" (")[0].replace("⭐ RECOMMENDED: ", ""),
+      city: opt.dataset.city || "",
+      lat: parseFloat(opt.dataset.lat),
+      lng: parseFloat(opt.dataset.lng),
     }));
 
     const sorted = LocationService.sortCentersByProximity(centers, coords);
@@ -591,9 +591,10 @@ async function refreshRecommendations() {
 }
 
 window.selectAndGoToDonate = function (id) {
-  const card = document.querySelector(`.center-card[data-center-id="${id}"]`);
-  if (card) {
-    card.click();
+  const select = document.getElementById("center_id_select");
+  if (select) {
+    select.value = id;
+    select.dispatchEvent(new Event("change"));
     loadSection("donate");
     // Scroll to form
     document
@@ -601,3 +602,15 @@ window.selectAndGoToDonate = function (id) {
       .scrollIntoView({ behavior: "smooth" });
   }
 };
+
+function removeRow(rowId) {
+  const row = document.getElementById(rowId);
+  if (row) {
+    row.style.transition = "all 0.4s ease";
+    row.style.opacity = "0";
+    row.style.transform = "translateX(20px)";
+    setTimeout(() => {
+      row.remove();
+    }, 400);
+  }
+}

@@ -2,10 +2,9 @@
 return [
     'models' => [
         'gemini-flash-latest',
-        'gemini-2.5-flash-lite',
-        'gemini-2.5-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-2.0-flash'
+        'gemini-pro',
+        'gemini-1.5-flash',
+        'gemini-1.5-pro'
     ],
     'default_model' => 'gemini-flash-latest'
 ];

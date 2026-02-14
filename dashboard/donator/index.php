@@ -298,40 +298,32 @@ try {
                                             </button>
                                         </div>
 
-                                        <!-- Hidden Input for Form Submission -->
-                                        <input type="hidden" name="center_id" id="selected_center_id" required>
-
-                                        <!-- Modern Card Picker UI -->
-                                        <div class="center-picker-container" id="center-picker">
-                                            <div class="row g-3">
+                                        <div class="premium-select-wrapper">
+                                            <select name="center_id" id="center_id_select" class="premium-select"
+                                                required>
+                                                <option value="" disabled selected>-- Choose a center near you --
+                                                </option>
                                                 <?php foreach ($blood_centers as $center): ?>
-                                                    <div class="col-md-6 col-lg-4">
-                                                        <div class="center-card"
-                                                            data-center-id="<?php echo $center['center_id']; ?>"
-                                                            data-lat="<?php echo $center['lat']; ?>"
-                                                            data-lng="<?php echo $center['lng']; ?>">
-                                                            <div class="center-card-content">
-                                                                <div class="center-card-icon">
-                                                                    <i class="bi bi-building"></i>
-                                                                </div>
-                                                                <div class="center-card-info">
-                                                                    <h5 class="center-name">
-                                                                        <?php echo htmlspecialchars($center['name']); ?>
-                                                                    </h5>
-                                                                    <p class="center-addr"><i class="bi bi-geo-alt"></i>
-                                                                        <?php echo htmlspecialchars($center['city']); ?></p>
-                                                                    <span class="distance-badge"
-                                                                        style="display: none;">Finding distance...</span>
-                                                                </div>
-                                                                <div class="center-card-check">
-                                                                    <i class="bi bi-check-circle-fill"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <option value="<?php echo $center['center_id']; ?>"
+                                                        data-lat="<?php echo $center['lat']; ?>"
+                                                        data-lng="<?php echo $center['lng']; ?>"
+                                                        data-city="<?php echo htmlspecialchars($center['city']); ?>">
+                                                        <?php echo htmlspecialchars($center['name']); ?>
+                                                        (<?php echo htmlspecialchars($center['city']); ?>)
+                                                    </option>
                                                 <?php endforeach; ?>
+                                            </select>
+                                            <div class="select-icon">
+                                                <i class="bi bi-building"></i>
+                                            </div>
+                                            <div class="select-arrow">
+                                                <i class="bi bi-chevron-down"></i>
                                             </div>
                                         </div>
+                                        <p class="select-hint mt-2 text-muted small">
+                                            <i class="bi bi-info-circle"></i> Use "Detect Nearest" to auto-sort by
+                                            proximity.
+                                        </p>
                                     </div>
                                     <div class="form-group">
                                         <label>Date</label>
@@ -361,7 +353,8 @@ try {
                             <div class="activity-list">
                                 <?php if (!empty($all_requests)): ?>
                                     <?php foreach ($all_requests as $req): ?>
-                                        <div class="activity-item d-flex align-items-center">
+                                        <div class="activity-item d-flex align-items-center"
+                                            id="row-request-<?php echo $req['request_id']; ?>">
                                             <div class="activity-icon"><i class="bi bi-hospital"></i></div>
                                             <div class="activity-details flex-grow-1">
                                                 <h4>Request at <?php echo htmlspecialchars($req['hospital_name']); ?></h4>
@@ -409,7 +402,8 @@ try {
                             <?php if (!empty($my_appointments)): ?>
                                 <div class="appointments-list">
                                     <?php foreach ($my_appointments as $appt): ?>
-                                        <div class="appointment-card" data-appt-id="<?php echo $appt['appointment_id']; ?>">
+                                        <div class="appointment-card" id="appt-card-<?php echo $appt['appointment_id']; ?>"
+                                            data-appt-id="<?php echo $appt['appointment_id']; ?>">
                                             <div class="appointment-card-body">
                                                 <div class="appointment-date">
                                                     <span
@@ -565,7 +559,7 @@ try {
                                     <tbody>
                                         <?php if (!empty($all_messages)): ?>
                                             <?php foreach ($all_messages as $msg): ?>
-                                                <tr>
+                                                <tr id="row-message-<?php echo $msg['message_id']; ?>">
                                                     <td><strong><?php echo htmlspecialchars($msg['sender_name']); ?></strong>
                                                     </td>
                                                     <td><?php echo htmlspecialchars($msg['subject'] ?? '—'); ?></td>

@@ -135,26 +135,17 @@ try {
     if ($result['code'] === 200) {
         $aiResponse = $result['body']['candidates'][0]['content']['parts'][0]['text'] ?? 'Sorry, I could not generate a response.';
 
-
+        // Save AI Message
         $stmt = $pdo->prepare("INSERT INTO ai_chat_messages (session_id, sender, message_content, sent_at) VALUES (?, 'AI', ?, NOW())");
         $stmt->execute([$sessionId, $aiResponse]);
 
-
+        // REMOVED: Blocking title generation. 
+        // We will generate titles lazily via a separate endpoint or just use the first few words of the user message initially.
         $generatedTitle = null;
         if ($isNewSession) {
-            $titlePayload = ["contents" => [["parts" => [["text" => "Short title (max 4 words) for chat starting: " . $userMessage]]]]];
-            $titleResult = callGemini($titlePayload, $apiKey, $models, 1);
-            if ($titleResult['code'] === 200) {
-                $generatedTitle = trim($titleResult['body']['candidates'][0]['content']['parts'][0]['text'] ?? 'New Chat');
-                $generatedTitle = substr(str_replace(['"', '*'], '', $generatedTitle), 0, 60);
-                $uStmt = $pdo->prepare("UPDATE ai_chat_sessions SET title = ? WHERE session_id = ?");
-                $uStmt->execute([$generatedTitle, $sessionId]);
-            } else {
-
-                $generatedTitle = substr($userMessage, 0, 40);
-                $uStmt = $pdo->prepare("UPDATE ai_chat_sessions SET title = ? WHERE session_id = ?");
-                $uStmt->execute([$generatedTitle, $sessionId]);
-            }
+            $generatedTitle = mb_substr($userMessage, 0, 40) . (mb_strlen($userMessage) > 40 ? '...' : '');
+            $uStmt = $pdo->prepare("UPDATE ai_chat_sessions SET title = ? WHERE session_id = ?");
+            $uStmt->execute([$generatedTitle, $sessionId]);
         }
 
         echo json_encode(['success' => true, 'reply' => $aiResponse, 'sessionId' => $sessionId, 'title' => $generatedTitle]);

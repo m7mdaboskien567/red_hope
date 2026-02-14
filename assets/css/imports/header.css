@@ -140,6 +140,10 @@ span#menuBtn {
   box-shadow: 0 6px 25px rgba(149, 8, 8, 0.4);
 }
 
+.menu-icon {
+  display: none;
+}
+
 .btnNav span::after {
   content: "";
   position: absolute;
@@ -351,27 +355,26 @@ span#settings i {
 
 .menu-close {
   position: absolute;
-  top: 40px;
-  right: 40px;
+  top: 3px;
+  right: 20px;
   width: 60px;
-  height: 60px;
+  height: 30px;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  border-radius: 50%;
+  border-radius: 11px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-base);
   font-size: 1.5rem;
   color: #fff;
+  padding: 10px;
 }
 
 .menu-close:hover {
   background: rgba(255, 255, 255, 0.25);
-  transform: rotate(90deg) scale(1.1);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .modal-exit .modal-dialog {
@@ -653,8 +656,6 @@ span#settings i {
   box-shadow: 0 6px 20px rgba(8, 131, 149, 0.4);
 }
 
-
-
 @media (max-width: 992px) {
   header {
     height: 80px;
@@ -669,8 +670,12 @@ span#settings i {
   }
 
   .menu {
-    width: 100%; 
+    width: 100%;
     padding: 60px 20px;
+  }
+
+  .menu-close {
+    display: flex;
   }
 }
 
@@ -683,13 +688,15 @@ span#settings i {
     font-size: 1.8rem;
   }
 
-  
   #authNav span p {
-    display: none; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   #authNav span p i {
-    display: block !important; 
+    display: block;
+    font-size: 1.2rem;
   }
 
   .btnNav span {
@@ -702,8 +709,13 @@ span#settings i {
     padding: 0 20px !important;
   }
 
-  #menuBtn p {
-    font-size: 0.8rem !important;
+  #menuBtn .menu-text {
+    display: none;
+  }
+
+  #menuBtn .menu-icon {
+    display: block;
+    font-size: 1.5rem;
   }
 
   .menu-head h2 {
@@ -715,7 +727,6 @@ span#settings i {
     padding: 15px 20px;
   }
 
-  
   .modal-dialog-centered {
     min-width: 95% !important;
     margin: 10px auto;

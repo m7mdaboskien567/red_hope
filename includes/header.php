@@ -15,7 +15,8 @@ $user_role = $_SESSION['role'] ?? '';
         </div>
         <div class="navpart btnNav">
             <span id="menuBtn" onclick="openCloseMenu()">
-                <p>Menu</p>
+                <p class="menu-text">Menu</p>
+                <i class="bi bi-list menu-icon"></i>
             </span>
             <div id="authNav" style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
                 <span id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
@@ -42,6 +43,9 @@ $user_role = $_SESSION['role'] ?? '';
 </header>
 
 <div class="menu" id="menu">
+    <div class="menu-close" onclick="openCloseMenu()">
+        Close
+    </div>
     <ul class="menu-items" id="mainMenu">
         <li onclick="location.href='/redhope/'">Home</li>
         <?php if (!$is_logged_in): ?>
